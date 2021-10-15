@@ -149,7 +149,10 @@ var reverseArr = function (array) {
 // 18. Create a new array with a given value and length.
 // buildList(0,5) // [0,0,0,0,0]
 // buildList(7,3) // [7,7,7]
-var buildList = function (value, length) {};
+var buildList = function (value, length) {
+  if (length === 1) return [value]
+  else return [value, ...buildList(value, length - 1)];
+};
 
 // 19. Implement FizzBuzz. Given integer n, return an array of the string representations of 1 to n.
 // For multiples of three, output 'Fizz' instead of the number.
@@ -266,8 +269,9 @@ var binarySearch = function (array, target, min = 0, max = array.length - 1) {
   const middle = Math.floor((min + max) / 2);
   const selectedElement = array[middle];
   if (selectedElement === target) return middle;
-  else if (max - min === 0) return null
-  else if (selectedElement < target) return binarySearch(array, target, middle + 1, max);
+  else if (max - min === 0) return null;
+  else if (selectedElement < target)
+    return binarySearch(array, target, middle + 1, max);
   else return binarySearch(array, target, min, middle);
 };
 
