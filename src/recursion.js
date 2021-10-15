@@ -49,12 +49,21 @@ var isEven = function (n) {
 // sumBelow(7); // 21
 var sumBelow = function (n) {
   if (n === 0) return 0;
-  else return n -1 + sumBelow(n - 1);
+  else return n - 1 + sumBelow(n - 1);
 };
 
 // 6. Get the integers within a range (x, y).
 // range(2,9); // [3,4,5,6,7,8]
-var range = function (x, y) {};
+var range = function (x, y) {
+  let result = [];
+  if (x < y) {
+    if (x < y - 1) {
+      result.push(++x);
+      result.push(...range(x, y));
+    }
+  }
+  return result;
+};
 
 // 7. Compute the exponent of a number.
 // The exponent of a number says how many times the base number is used as a factor.
@@ -71,13 +80,20 @@ var powerOfTwo = function (n) {};
 
 // 9. Write a function that reverses a string.
 var reverse = function (string) {
-  return string.length == 0 ? "" : reverse(string.substring(1)) + string.charAt(0);
+  return string.length == 0
+    ? ""
+    : reverse(string.substring(1)) + string.charAt(0);
 };
 
 // 10. Write a function that determines if a string is a palindrome.
 var palindrome = function (string) {
   if (string.length == 0 || string.length == 1) return true;
-  else return string[0].toLocaleLowerCase() === string[string.length - 1].toLocaleLowerCase() && palindrome(string.substring(1, string.length - 1));
+  else
+    return (
+      string[0].toLocaleLowerCase() ===
+        string[string.length - 1].toLocaleLowerCase() &&
+      palindrome(string.substring(1, string.length - 1))
+    );
 };
 
 // 11. Write a function that returns the remainder of x divided by y without using the
@@ -108,15 +124,27 @@ var gcd = function (x, y) {};
 // compareStr('tomato', 'tomato') // true
 var compareStr = function (str1, str2) {
   if (str1 === "" && str2 === "") return true;
-  return str1.charAt(0) === str2.charAt(0) && compareStr(str1.substring(1), str2.substring(1))
+  return (
+    str1.charAt(0) === str2.charAt(0) &&
+    compareStr(str1.substring(1), str2.substring(1))
+  );
 };
 
 // 16. Write a function that accepts a string and creates an array where each letter
 // occupies an index of the array.
-var createArray = function (str) {};
+var createArray = function (str) {
+  if (str == "") return [];
+  else return [str[0], ...createArray(str.substring(1))];
+};
 
 // 17. Reverse the order of an array
-var reverseArr = function (array) {};
+var reverseArr = function (array) {
+  if (!array.length) return [];
+  else {
+    const [first, ...rest] = array;
+    return [...reverseArr(rest), first];
+  }
+};
 
 // 18. Create a new array with a given value and length.
 // buildList(0,5) // [0,0,0,0,0]
@@ -234,7 +262,14 @@ var tagCount = function (tag, node) {};
 // var array = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
 // binarySearch(array, 5) // 5
 // https://www.khanacademy.org/computing/computer-science/algorithms/binary-search/a/binary-search
-var binarySearch = function (array, target, min, max) {};
+var binarySearch = function (array, target, min = 0, max = array.length - 1) {
+  const middle = Math.floor((min + max) / 2);
+  const selectedElement = array[middle];
+  if (selectedElement === target) return middle;
+  else if (max - min === 0) return null
+  else if (selectedElement < target) return binarySearch(array, target, middle + 1, max);
+  else return binarySearch(array, target, min, middle);
+};
 
 // 39. Write a merge sort function.
 // mergeSort([34,7,23,32,5,62]) // [5,7,23,32,34,62]
