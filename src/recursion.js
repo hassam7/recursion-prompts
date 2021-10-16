@@ -56,12 +56,7 @@ var sumBelow = function (n) {
 // range(2,9); // [3,4,5,6,7,8]
 var range = function (x, y) {
   let result = [];
-  if (x < y) {
-    if (x < y - 1) {
-      result.push(++x);
-      result.push(...range(x, y));
-    }
-  }
+
   return result;
 };
 
@@ -164,7 +159,14 @@ var fizzBuzz = function (n) {};
 // 20. Count the occurrence of a value in a list.
 // countOccurrence([2,7,4,4,1,4], 4) // 3
 // countOccurrence([2,'banana',4,4,1,'banana'], 'banana') // 2
-var countOccurrence = function (array, value) {};
+var countOccurrence = function (array, value) {
+  if (array.length === 0) return 0;
+  else {
+    const [first, ...rest] = array;
+    if (first === value) return 1 + countOccurrence(rest, value);
+    else return 0 + countOccurrence(rest, value)
+  }
+};
 
 // 21. Write a recursive version of map.
 // rMap([1,2,3], timesTwo); // [2,4,6]
@@ -203,11 +205,24 @@ var nthFibo = function (n) {};
 // 27. Given an array of words, return a new array containing each word capitalized.
 // var words = ['i', 'am', 'learning', 'recursion'];
 // capitalizedWords(words); // ['I', 'AM', 'LEARNING', 'RECURSION']
-var capitalizeWords = function (array) {};
+var capitalizeWords = function (array) {
+  if (array.length === 0) return [];
+  else {
+    const [first, ...rest] = array;
+    return [first.toUpperCase(), ...capitalizeWords(rest)]
+  }
+};
 
 // 28. Given an array of strings, capitalize the first letter of each index.
 // capitalizeFirst(['car','poop','banana']); // ['Car','Poop','Banana']
-var capitalizeFirst = function (array) {};
+var capitalizeFirst = function (array) {
+  if (array.length === 0) return [];
+  else {
+    const [first, ...rest] = array;
+    const [fChar, ...restChar] = first;
+    return [fChar.toUpperCase()+restChar.join(""), ...capitalizeFirst(rest)]
+  }
+};
 
 // 29. Return the sum of all even numbers in an object containing nested objects.
 // var obj1 = {
@@ -218,15 +233,48 @@ var capitalizeFirst = function (array) {};
 //   e: {e: {e: 2}, ee: 'car'}
 // };
 // nestedEvenSum(obj1); // 10
-var nestedEvenSum = function (obj) {};
+var nestedEvenSum = function (obj) {
+  let currentSum = 0;
+  for(let item of Object.keys(obj)) {
+    if (Number.isInteger(obj[item])) {
+      if (obj[item] % 2 == 0) currentSum += obj[item];
+    }
+    else if (typeof obj[item] == "object" ) {
+      currentSum += nestedEvenSum(obj[item]);
+    }
+
+  }
+  return currentSum;
+};
 
 // 30. Flatten an array containing nested arrays.
 // flatten([1,[2],[3,[[4]]],5]); // [1,2,3,4,5]
-var flatten = function (array) {};
+var flatten = function (array) {
+  let result = [];
+  for(let item of array) {
+    if(Array.isArray(item)) {
+      result.push(...flatten(item));
+    } else result.push(item);
+  }
+  return result;
+};
 
 // 31. Given a string, return an object containing tallies of each letter.
 // letterTally('potato'); // {p:1, o:2, t:2, a:1}
-var letterTally = function (str, obj) {};
+var letterTally = function (str, obj = {}) {
+  if (str == "") return obj;
+  else {
+    const first = str.charAt(0);
+    const rest = str.substring(1);
+    if (obj[first]) {
+      obj[first]++;
+      return letterTally(rest, obj);
+    } else {
+      obj[first] = 1;
+      return letterTally(rest, obj);
+    }
+  }
+};
 
 // 32. Eliminate consecutive duplicates in a list. If the list contains repeated
 // elements they should be replaced with a single copy of the element. The order of the
