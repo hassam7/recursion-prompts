@@ -55,7 +55,12 @@ var sumBelow = function (n) {
 // 6. Get the integers within a range (x, y).
 // range(2,9); // [3,4,5,6,7,8]
 var range = function (x, y) {
+  // 7, 2
   let result = [];
+  const step = x > y ? -1 : 1;
+  if (x == y) return [];
+  if (x === y - step) [];
+  else result = [x + step, ...range(x + step, y)];
 
   return result;
 };
@@ -100,7 +105,11 @@ var modulo = function (x, y) {};
 
 // 12. Write a function that multiplies two numbers without using the * operator or
 // Math methods.
-var multiply = function (x, y) {};
+var multiply = function (x, y) {
+  if (y == 0) return 0;
+  if (y > 0) return x + multiply(x, y - 1);
+  if (y < 0) return -multiply(x, -y);
+};
 
 // 13. Write a function that divides two numbers without using the / operator or
 // Math methods to arrive at an approximate quotient (ignore decimal endings).
@@ -145,7 +154,7 @@ var reverseArr = function (array) {
 // buildList(0,5) // [0,0,0,0,0]
 // buildList(7,3) // [7,7,7]
 var buildList = function (value, length) {
-  if (length === 1) return [value]
+  if (length === 1) return [value];
   else return [value, ...buildList(value, length - 1)];
 };
 
@@ -154,7 +163,24 @@ var buildList = function (value, length) {
 // For multiples of five, output 'Buzz' instead of the number.
 // For numbers which are multiples of both three and five, output “FizzBuzz” instead of the number.
 // fizzBuzz(5) // ['1','2','Fizz','4','Buzz']
-var fizzBuzz = function (n) {};
+var fizzBuzz = function (n) {
+  if (n === 0) return [];
+  else {
+    if (n % 3 == 0 && n % 5 == 0) {
+      const temp = [...fizzBuzz(n - 1), "FizzBuzz"];
+      return temp;
+    } else if (n % 5 == 0) {
+      const temp = [...fizzBuzz(n - 1), "Buzz"];
+      return temp;
+    } else if (n % 3 == 0) {
+      const temp = [...fizzBuzz(n - 1), "Fizz"];
+      return temp;
+    } else {
+      const temp = [...fizzBuzz(n - 1), n + ""];
+      return temp;
+    }
+  }
+};
 
 // 20. Count the occurrence of a value in a list.
 // countOccurrence([2,7,4,4,1,4], 4) // 3
@@ -164,25 +190,50 @@ var countOccurrence = function (array, value) {
   else {
     const [first, ...rest] = array;
     if (first === value) return 1 + countOccurrence(rest, value);
-    else return 0 + countOccurrence(rest, value)
+    else return 0 + countOccurrence(rest, value);
   }
 };
 
 // 21. Write a recursive version of map.
 // rMap([1,2,3], timesTwo); // [2,4,6]
-var rMap = function (array, callback) {};
+var rMap = function (array, callback) {
+  if (!array.length) return [];
+  const [first, ...rest] = array;
+  return [callback(first), ...rMap(rest, callback)];
+};
 
 // 22. Write a function that counts the number of times a key occurs in an object.
 // var obj = {'e':{'x':'y'},'t':{'r':{'e':'r'},'p':{'y':'r'}},'y':'e'};
 // countKeysInObj(obj, 'r') // 1
 // countKeysInObj(obj, 'e') // 2
-var countKeysInObj = function (obj, key) {};
+var countKeysInObj = function (obj, key) {
+  let count = 0;
+  for (let objKey of Object.keys(obj)) {
+    if (objKey == key) count++;
+    if (typeof obj[objKey] == "object") {
+      count += countKeysInObj(obj[objKey], key);
+    }
+  }
+  return count;
+};
 
 // 23. Write a function that counts the number of times a value occurs in an object.
 // var obj = {'e':{'x':'y'},'t':{'r':{'e':'r'},'p':{'y':'r'}},'y':'e'};
 // countValuesInObj(obj, 'r') // 2
 // countValuesInObj(obj, 'e') // 1
-var countValuesInObj = function (obj, value) {};
+var countValuesInObj = function (obj, value) {
+  let count = 0;
+  for (let item of Object.keys(obj)) {
+    if (typeof obj[item] === "object") {
+      count += countValuesInObj(obj[item], value);
+    } else {
+      if (obj[item] === value) {
+        count++;
+      }
+    }
+  }
+  return count;
+};
 
 // 24. Find all keys in an object (and nested objects) by a provided name and rename
 // them to a provided new name while preserving the value stored at that key.
@@ -209,7 +260,7 @@ var capitalizeWords = function (array) {
   if (array.length === 0) return [];
   else {
     const [first, ...rest] = array;
-    return [first.toUpperCase(), ...capitalizeWords(rest)]
+    return [first.toUpperCase(), ...capitalizeWords(rest)];
   }
 };
 
@@ -220,7 +271,7 @@ var capitalizeFirst = function (array) {
   else {
     const [first, ...rest] = array;
     const [fChar, ...restChar] = first;
-    return [fChar.toUpperCase()+restChar.join(""), ...capitalizeFirst(rest)]
+    return [fChar.toUpperCase() + restChar.join(""), ...capitalizeFirst(rest)];
   }
 };
 
@@ -235,14 +286,12 @@ var capitalizeFirst = function (array) {
 // nestedEvenSum(obj1); // 10
 var nestedEvenSum = function (obj) {
   let currentSum = 0;
-  for(let item of Object.keys(obj)) {
+  for (let item of Object.keys(obj)) {
     if (Number.isInteger(obj[item])) {
       if (obj[item] % 2 == 0) currentSum += obj[item];
-    }
-    else if (typeof obj[item] == "object" ) {
+    } else if (typeof obj[item] == "object") {
       currentSum += nestedEvenSum(obj[item]);
     }
-
   }
   return currentSum;
 };
@@ -251,8 +300,8 @@ var nestedEvenSum = function (obj) {
 // flatten([1,[2],[3,[[4]]],5]); // [1,2,3,4,5]
 var flatten = function (array) {
   let result = [];
-  for(let item of array) {
-    if(Array.isArray(item)) {
+  for (let item of array) {
+    if (Array.isArray(item)) {
       result.push(...flatten(item));
     } else result.push(item);
   }
@@ -281,7 +330,15 @@ var letterTally = function (str, obj = {}) {
 // elements should not be changed.
 // compress([1,2,2,3,4,4,5,5,5]) // [1,2,3,4,5]
 // compress([1,2,2,3,4,4,2,5,5,5,4,4]) // [1,2,3,4,2,5,4]
-var compress = function (list) {};
+var compress = function (list) {
+  if (list.length === 1) return list;
+  else {
+    const [first, second, ...rest] = list;
+    if (first == second) {
+      return compress([second, ...rest]);
+    } else return [first, ...compress([second, ...rest])];
+  }
+};
 
 // 33. Augment every element in a list with a new value where each element is an array
 // itself.
@@ -291,7 +348,15 @@ var augmentElements = function (array, aug) {};
 // 34. Reduce a series of zeroes to a single 0.
 // minimizeZeroes([2,0,0,0,1,4]) // [2,0,1,4]
 // minimizeZeroes([2,0,0,0,1,0,0,4]) // [2,0,1,0,4]
-var minimizeZeroes = function (array) {};
+var minimizeZeroes = function (array) {
+  if (array.length === 1) return array;
+  else {
+    const [first, second, ...rest] = array;
+    if (first == 0 && first == second) {
+      return minimizeZeroes([second, ...rest]);
+    } else return [first, ...minimizeZeroes([second, ...rest])];
+  }
+};
 
 // 35. Alternate the numbers in an array between positive and negative regardless of
 // their original sign. The first number in the index always needs to be positive.
@@ -302,7 +367,11 @@ var alternateSign = function (array) {};
 // 36. Given a string, return a string with digits converted to their word equivalent.
 // Assume all numbers are single digits (less than 10).
 // numToText("I have 5 dogs and 6 ponies"); // "I have five dogs and six ponies"
-var numToText = function (str) {};
+var numToText = function (str) {
+  const stringArray = str.split(" ");
+  const [first, ...rest] = stringArray;
+  if (Number.isInteger(first)) {}
+};
 
 // *** EXTRA CREDIT ***
 
