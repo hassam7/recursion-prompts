@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Recursion Prompts — Interactive Playground</title>
+  <meta name="description" content="Practice recursion in JavaScript with 40 interactive challenges. Write your solution, run tests, and see results in real time." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ── Reset & Tokens ─────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:          #0b0d14;
+      --surface:     #13151f;
+      --surface2:    #1a1d2b;
+      --border:      rgba(255,255,255,0.07);
+      --border2:     rgba(255,255,255,0.12);
+      --accent:      #7c6fef;
+      --accent2:     #9d93f5;
+      --accent-glow: rgba(124,111,239,0.35);
+      --pass:        #34d399;
+      --pass-bg:     rgba(52,211,153,0.08);
+      --fail:        #f87171;
+      --fail-bg:     rgba(248,113,113,0.08);
+      --pending:     #fbbf24;
+      --text:        #e2e8f0;
+      --text2:       #94a3b8;
+      --text3:       #475569;
+      --radius:      12px;
+      --radius-sm:   8px;
+      --transition:  0.2s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow: hidden;
+    }
+
+    /* ── Layout ─────────────────────────────────────────────────── */
+    .app {
+      display: grid;
+      grid-template-rows: 56px 1fr;
+      grid-template-columns: 260px 1fr 380px;
+      grid-template-areas:
+        "header header header"
+        "sidebar editor results";
+      height: 100vh;
+    }
+
+    /* ── Header ─────────────────────────────────────────────────── */
+    header {
+      grid-area: header;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 0 20px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      z-index: 10;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: -0.3px;
+    }
+
+    .logo-icon {
+      width: 28px; height: 28px;
+      background: linear-gradient(135deg, var(--accent), #a78bfa);
+      border-radius: 7px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+    }
+
+    .header-center {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .nav-btn {
+      display: flex; align-items: center; gap: 6px;
+      padding: 6px 14px;
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius-sm);
+      color: var(--text2);
+      font-size: 13px;
+      font-family: inherit;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+    .nav-btn:hover:not(:disabled) {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+      box-shadow: 0 0 20px var(--accent-glow);
+    }
+    .nav-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+    .problem-badge {
+      display: flex; align-items: center; gap: 8px;
+      background: rgba(124,111,239,0.1);
+      border: 1px solid rgba(124,111,239,0.25);
+      border-radius: 20px;
+      padding: 4px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--accent2);
+    }
+
+    .run-btn {
+      margin-left: auto;
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 20px;
+      background: linear-gradient(135deg, var(--accent), #a78bfa);
+      border: none;
+      border-radius: var(--radius-sm);
+      color: #fff;
+      font-size: 13px;
+      font-family: inherit;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition);
+      box-shadow: 0 4px 15px var(--accent-glow);
+    }
+    .run-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 25px var(--accent-glow); }
+    .run-btn:active { transform: translateY(0); }
+    .run-btn.loading { opacity: 0.7; cursor: not-allowed; }
+    .run-btn .spinner {
+      width: 14px; height: 14px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      display: none;
+    }
+    .run-btn.loading .spinner { display: block; }
+    .run-btn.loading .run-label { display: none; }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Sidebar ─────────────────────────────────────────────────── */
+    .sidebar {
+      grid-area: sidebar;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .sidebar-header {
+      padding: 14px 16px 10px;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text3);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .sidebar-search {
+      padding: 10px 12px;
+      flex-shrink: 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .sidebar-search input {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 6px 10px;
+      color: var(--text);
+      font-size: 12px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color var(--transition);
+    }
+    .sidebar-search input:focus { border-color: var(--accent); }
+    .sidebar-search input::placeholder { color: var(--text3); }
+
+    .sidebar-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 6px 0;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border2) transparent;
+    }
+
+    .problem-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 14px;
+      cursor: pointer;
+      transition: background var(--transition);
+      border-left: 3px solid transparent;
+    }
+    .problem-item:hover { background: var(--surface2); }
+    .problem-item.active {
+      background: rgba(124,111,239,0.1);
+      border-left-color: var(--accent);
+    }
+
+    .problem-num {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text3);
+      min-width: 22px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .problem-item.active .problem-num { color: var(--accent2); }
+
+    .problem-name {
+      font-size: 12.5px;
+      color: var(--text2);
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .problem-item.active .problem-name { color: var(--text); font-weight: 500; }
+
+    .problem-status {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--border2);
+      flex-shrink: 0;
+      transition: background var(--transition);
+    }
+    .problem-status.pass { background: var(--pass); box-shadow: 0 0 6px var(--pass); }
+    .problem-status.fail { background: var(--fail); box-shadow: 0 0 6px var(--fail); }
+
+    /* ── Editor Panel ────────────────────────────────────────────── */
+    .editor-panel {
+      grid-area: editor;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: var(--bg);
+    }
+
+    .problem-header {
+      padding: 16px 20px 12px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .problem-title {
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -0.4px;
+      margin-bottom: 4px;
+    }
+
+    .problem-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .meta-tag {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: rgba(124,111,239,0.12);
+      color: var(--accent2);
+    }
+
+    .editor-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 14px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .toolbar-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--text3);
+    }
+
+    .reset-btn {
+      font-size: 11px;
+      color: var(--text3);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      padding: 2px 6px;
+      border-radius: 4px;
+      transition: color var(--transition);
+    }
+    .reset-btn:hover { color: var(--text2); }
+
+    .editor-wrapper {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #code-editor {
+      width: 100%;
+      height: 100%;
+      background: var(--bg);
+      color: #c9d1e3;
+      font-family: 'JetBrains Mono', 'Fira Code', monospace;
+      font-size: 13.5px;
+      line-height: 1.7;
+      padding: 16px 20px;
+      border: none;
+      outline: none;
+      resize: none;
+      tab-size: 2;
+      white-space: pre;
+      overflow: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border2) transparent;
+    }
+
+    /* ── Results Panel ───────────────────────────────────────────── */
+    .results-panel {
+      grid-area: results;
+      display: flex;
+      flex-direction: column;
+      background: var(--surface);
+      border-left: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .results-header {
+      padding: 14px 16px 10px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .results-title {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text3);
+      margin-bottom: 10px;
+    }
+
+    .progress-bar-wrap {
+      height: 4px;
+      background: var(--surface2);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent), var(--pass));
+      border-radius: 2px;
+      transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    .stats-row {
+      display: flex;
+      gap: 12px;
+      font-size: 11px;
+    }
+
+    .stat { color: var(--text3); }
+    .stat span { font-weight: 700; }
+    .stat .pass-count  { color: var(--pass); }
+    .stat .fail-count  { color: var(--fail); }
+    .stat .total-count { color: var(--text2); }
+
+    .results-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 8px 0;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border2) transparent;
+    }
+
+    /* Empty / idle state */
+    .idle-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      gap: 10px;
+      color: var(--text3);
+      font-size: 13px;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .idle-state .idle-icon {
+      font-size: 36px;
+      opacity: 0.5;
+    }
+
+    .test-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 9px 14px;
+      border-bottom: 1px solid var(--border);
+      animation: fadeIn 0.25s ease;
+      transition: background var(--transition);
+    }
+    .test-item:hover { background: var(--surface2); }
+    .test-item:last-child { border-bottom: none; }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+    @keyframes passAnim { 0%,100%{transform:scale(1)} 50%{transform:scale(1.3)} }
+    @keyframes failShake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-3px)} 75%{transform:translateX(3px)} }
+
+    .test-icon {
+      font-size: 12px;
+      margin-top: 1px;
+      flex-shrink: 0;
+    }
+
+    .test-item.pass .test-icon { animation: passAnim 0.4s ease; }
+    .test-item.fail .test-icon { animation: failShake 0.4s ease; }
+
+    .test-content { flex: 1; min-width: 0; }
+
+    .test-title {
+      font-size: 12px;
+      line-height: 1.4;
+      color: var(--text);
+    }
+
+    .test-error {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10.5px;
+      color: var(--fail);
+      margin-top: 4px;
+      padding: 6px 8px;
+      background: var(--fail-bg);
+      border-radius: 5px;
+      white-space: pre-wrap;
+      word-break: break-all;
+      display: none;
+    }
+    .test-item.fail .test-error { display: block; }
+
+    .test-item.pass { border-left: 2px solid var(--pass); padding-left: 12px; }
+    .test-item.fail { border-left: 2px solid var(--fail); padding-left: 12px; }
+
+    /* Summary box */
+    .summary-box {
+      padding: 12px 14px;
+      margin: 10px 12px;
+      border-radius: var(--radius);
+      font-size: 13px;
+      font-weight: 600;
+      text-align: center;
+      display: none;
+    }
+    .summary-box.all-pass {
+      background: var(--pass-bg);
+      border: 1px solid rgba(52,211,153,0.25);
+      color: var(--pass);
+    }
+    .summary-box.has-fail {
+      background: var(--fail-bg);
+      border: 1px solid rgba(248,113,113,0.2);
+      color: var(--fail);
+    }
+
+    /* iframe (hidden) */
+    #test-frame {
+      display: none;
+      width: 0; height: 0;
+      border: none;
+      position: absolute;
+      left: -9999px;
+    }
+
+    /* ── Scrollbar styling ───────────────────────────────────────── */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+    /* ── Loading overlay ─────────────────────────────────────────── */
+    #loading-overlay {
+      position: fixed; inset: 0;
+      background: var(--bg);
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column;
+      gap: 12px;
+      z-index: 100;
+      transition: opacity 0.3s ease;
+    }
+    #loading-overlay.hidden { opacity: 0; pointer-events: none; }
+    .loader-ring {
+      width: 36px; height: 36px;
+      border: 3px solid var(--border2);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    .loader-text { font-size: 13px; color: var(--text3); }
+  </style>
+</head>
+<body>
+
+<!-- Loading overlay -->
+<div id="loading-overlay">
+  <div class="loader-ring"></div>
+  <div class="loader-text">Loading problems…</div>
+</div>
+
+<div class="app">
+
+  <!-- ── Header ─────────────────────────────────────────────────── -->
+  <header>
+    <div class="logo">
+      <div class="logo-icon">🔁</div>
+      Recursion Prompts
+    </div>
+
+    <div class="header-center">
+      <button class="nav-btn" id="prev-btn" disabled>
+        ← Prev
+      </button>
+      <div class="problem-badge">
+        Problem <span id="current-num">1</span> / <span id="total-num">40</span>
+      </div>
+      <button class="nav-btn" id="next-btn">
+        Next →
+      </button>
+    </div>
+
+    <button class="run-btn" id="run-btn">
+      <div class="spinner"></div>
+      <span class="run-label">▶ Run Tests</span>
+    </button>
+  </header>
+
+  <!-- ── Sidebar ─────────────────────────────────────────────────── -->
+  <aside class="sidebar">
+    <div class="sidebar-header">All Problems</div>
+    <div class="sidebar-search">
+      <input type="text" id="search-input" placeholder="Search problems…" />
+    </div>
+    <div class="sidebar-list" id="sidebar-list"></div>
+  </aside>
+
+  <!-- ── Editor ─────────────────────────────────────────────────── -->
+  <main class="editor-panel">
+    <div class="problem-header">
+      <div class="problem-title" id="problem-title">Loading…</div>
+      <div class="problem-meta">
+        <span class="meta-tag">Recursion</span>
+        <span class="meta-tag" id="problem-part-tag">Part 1</span>
+      </div>
+    </div>
+
+    <div class="editor-toolbar">
+      <span class="toolbar-label">Solution</span>
+      <button class="reset-btn" id="reset-btn">↺ Reset to stub</button>
+    </div>
+
+    <div class="editor-wrapper">
+      <textarea id="code-editor" spellcheck="false" autocorrect="off" autocapitalize="off"></textarea>
+    </div>
+  </main>
+
+  <!-- ── Results ─────────────────────────────────────────────────── -->
+  <aside class="results-panel">
+    <div class="results-header">
+      <div class="results-title">Test Results</div>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar" id="progress-bar"></div>
+      </div>
+      <div class="stats-row">
+        <div class="stat">Pass: <span class="pass-count" id="stat-pass">–</span></div>
+        <div class="stat">Fail: <span class="fail-count" id="stat-fail">–</span></div>
+        <div class="stat">Total: <span class="total-count" id="stat-total">–</span></div>
+      </div>
+    </div>
+
+    <div class="results-body" id="results-body">
+      <div class="idle-state">
+        <div class="idle-icon">🧪</div>
+        <div>Write your solution and click<br/><strong>▶ Run Tests</strong> to see results.</div>
+      </div>
+    </div>
+  </aside>
+
+</div>
+
+<!-- Hidden iframe for sandboxed test execution -->
+<iframe id="test-frame" sandbox="allow-scripts allow-same-origin"></iframe>
+
+<script>
+(function() {
+  'use strict';
+
+  // ── State ─────────────────────────────────────────────────────────
+  let manifest   = [];       // [{num, slug, title, dir}, ...]
+  let currentIdx = 0;        // 0-based index into manifest
+  let stubCache  = {};       // problemNum → original stub text
+  let userCode   = {};       // problemNum → user-edited code
+  let libCache   = {};       // url → file text (pre-fetched libs)
+  let resultCache= {};       // problemNum → {pass,fail} (last run)
+  let running    = false;
+
+  // ── DOM refs ──────────────────────────────────────────────────────
+  const overlay      = document.getElementById('loading-overlay');
+  const sidebarList  = document.getElementById('sidebar-list');
+  const searchInput  = document.getElementById('search-input');
+  const prevBtn      = document.getElementById('prev-btn');
+  const nextBtn      = document.getElementById('next-btn');
+  const runBtn       = document.getElementById('run-btn');
+  const resetBtn     = document.getElementById('reset-btn');
+  const currentNum   = document.getElementById('current-num');
+  const totalNum     = document.getElementById('total-num');
+  const problemTitle = document.getElementById('problem-title');
+  const partTag      = document.getElementById('problem-part-tag');
+  const codeEditor   = document.getElementById('code-editor');
+  const testFrame    = document.getElementById('test-frame');
+  const resultsBody  = document.getElementById('results-body');
+  const progressBar  = document.getElementById('progress-bar');
+  const statPass     = document.getElementById('stat-pass');
+  const statFail     = document.getElementById('stat-fail');
+  const statTotal    = document.getElementById('stat-total');
+
+  // ── Utility: fetch text ───────────────────────────────────────────
+  async function fetchText(url) {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`Failed to fetch ${url}: ${res.status}`);
+    return res.text();
+  }
+
+  // ── Pre-fetch all lib scripts once ────────────────────────────────
+  const LIB_SCRIPTS = [
+    '/lib/jquery.js',
+    '/lib/chai.js',
+    '/lib/mocha.js',
+    '/lib/sinon.js',
+    '/lib/testSupport.js',
+  ];
+
+  async function prefetchLibs() {
+    await Promise.all(LIB_SCRIPTS.map(async url => {
+      libCache[url] = await fetchText(url);
+    }));
+  }
+
+  // ── Load manifest ─────────────────────────────────────────────────
+  async function loadManifest() {
+    const data = await fetchText('/problems/manifest.json');
+    manifest = JSON.parse(data);
+    totalNum.textContent = manifest.length;
+  }
+
+  // ── Get problem number from URL (?problem=N, 1-based) ────────────
+  function getProblemFromURL() {
+    const params = new URLSearchParams(window.location.search);
+    const n = parseInt(params.get('problem'), 10);
+    if (!n || n < 1 || n > manifest.length) return 1;
+    return n;
+  }
+
+  // ── Navigate to problem N (1-based) ──────────────────────────────
+  async function goToProblem(n, pushHistory = true) {
+    if (running) return;
+    const idx = n - 1;
+    if (idx < 0 || idx >= manifest.length) return;
+
+    // Save current user code before switching
+    if (manifest[currentIdx]) {
+      userCode[manifest[currentIdx].num] = codeEditor.value;
+    }
+
+    currentIdx = idx;
+    const p = manifest[currentIdx];
+
+    // Update URL
+    if (pushHistory) {
+      const url = `${window.location.pathname}?problem=${n}`;
+      window.history.pushState({ problem: n }, '', url);
+    }
+
+    // Update header
+    currentNum.textContent  = n;
+    problemTitle.textContent = `${n}. ${p.title}`;
+    partTag.textContent     = p.num <= 36 ? 'Part 1' : 'Part 2';
+
+    // Update nav buttons
+    prevBtn.disabled = (idx === 0);
+    nextBtn.disabled = (idx === manifest.length - 1);
+
+    // Update sidebar highlight
+    document.querySelectorAll('.problem-item').forEach((el, i) => {
+      el.classList.toggle('active', i === idx);
+    });
+
+    // Scroll sidebar item into view
+    const activeItem = sidebarList.querySelector('.problem-item.active');
+    if (activeItem) activeItem.scrollIntoView({ block: 'nearest' });
+
+    // Load stub — always re-fetch if not cached or if the cached value is empty
+    if (!stubCache[p.num]) {
+      const fetched = await fetchText(`/problems/${p.dir}/problem.js`);
+      // Only cache if the file has meaningful content (guards against temporarily blank files)
+      if (fetched && fetched.trim().length > 0) {
+        stubCache[p.num] = fetched;
+      }
+    }
+
+    // Restore user code (only if non-empty) or fall back to stub
+    const saved = userCode[p.num];
+    codeEditor.value = (saved !== undefined && saved.trim().length > 0)
+      ? saved
+      : (stubCache[p.num] || '');
+
+    // Restore results if previously run
+    if (resultCache[p.num]) {
+      renderResults(resultCache[p.num]);
+    } else {
+      resetResultsPanel();
+    }
+  }
+
+  // ── Build problem list in sidebar ─────────────────────────────────
+  function buildSidebar(filter = '') {
+    const lf = filter.toLowerCase();
+    sidebarList.innerHTML = '';
+    manifest.forEach((p, i) => {
+      const label = `${p.num}. ${p.title}`;
+      if (lf && !label.toLowerCase().includes(lf)) return;
+
+      const item = document.createElement('div');
+      item.className = 'problem-item' + (i === currentIdx ? ' active' : '');
+      item.dataset.idx = i;
+
+      // Status dot
+      const dot = document.createElement('div');
+      dot.className = 'problem-status';
+      const cached = resultCache[p.num];
+      if (cached) {
+        dot.classList.add(cached.stats.failures === 0 ? 'pass' : 'fail');
+      }
+
+      const numEl = document.createElement('div');
+      numEl.className = 'problem-num';
+      numEl.textContent = String(p.num).padStart(2, '0');
+
+      const nameEl = document.createElement('div');
+      nameEl.className = 'problem-name';
+      nameEl.textContent = p.title;
+
+      item.appendChild(numEl);
+      item.appendChild(nameEl);
+      item.appendChild(dot);
+
+      item.addEventListener('click', () => {
+        goToProblem(p.num);
+        // Re-build sidebar to ensure active state is correct even in filtered view
+        setTimeout(() => buildSidebar(searchInput.value), 50);
+      });
+
+      sidebarList.appendChild(item);
+    });
+  }
+
+  // ── Reset results panel to idle ───────────────────────────────────
+  function resetResultsPanel() {
+    progressBar.style.width = '0%';
+    statPass.textContent  = '–';
+    statFail.textContent  = '–';
+    statTotal.textContent = '–';
+    resultsBody.innerHTML = `
+      <div class="idle-state">
+        <div class="idle-icon">🧪</div>
+        <div>Write your solution and click<br/><strong>▶ Run Tests</strong> to see results.</div>
+      </div>`;
+  }
+
+  // ── Render test results ───────────────────────────────────────────
+  function renderResults(data) {
+    const { stats, passes, failures } = data;
+    const total = stats.passes + stats.failures;
+
+    progressBar.style.width = total ? `${(stats.passes / total) * 100}%` : '0%';
+    statPass.textContent  = stats.passes;
+    statFail.textContent  = stats.failures;
+    statTotal.textContent = total;
+
+    resultsBody.innerHTML = '';
+
+    // Summary
+    const summary = document.createElement('div');
+    summary.className = 'summary-box ' + (stats.failures === 0 ? 'all-pass' : 'has-fail');
+    summary.style.display = 'block';
+    summary.textContent = stats.failures === 0
+      ? `🎉 All ${total} tests passing!`
+      : `${stats.passes} / ${total} tests passing`;
+    resultsBody.appendChild(summary);
+
+    // Passes
+    passes.forEach(t => {
+      const el = document.createElement('div');
+      el.className = 'test-item pass';
+      el.innerHTML = `
+        <div class="test-icon">✅</div>
+        <div class="test-content">
+          <div class="test-title">${escapeHtml(stripTopDescribe(t.title))}</div>
+        </div>`;
+      resultsBody.appendChild(el);
+    });
+
+    // Failures
+    failures.forEach(t => {
+      const el = document.createElement('div');
+      el.className = 'test-item fail';
+      el.innerHTML = `
+        <div class="test-icon">❌</div>
+        <div class="test-content">
+          <div class="test-title">${escapeHtml(stripTopDescribe(t.title))}</div>
+          <div class="test-error">${escapeHtml(t.error || '')}</div>
+        </div>`;
+      resultsBody.appendChild(el);
+    });
+  }
+
+  // Strip the top-level describe title from test full title for cleaner display
+  function stripTopDescribe(fullTitle) {
+    // fullTitle is like "1. Factorial should return a number"
+    // strip the "1. Factorial " prefix
+    return fullTitle.replace(/^\d+\.\s*\S.*?\s/, '').trim() || fullTitle;
+  }
+
+  function escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  // ── Run tests in hidden iframe ────────────────────────────────────
+  async function runTests() {
+    if (running) return;
+    running = true;
+    runBtn.classList.add('loading');
+
+    const p   = manifest[currentIdx];
+    const code = codeEditor.value;
+    userCode[p.num] = code;
+
+    // Load spec for this problem
+    let specCode;
+    try {
+      specCode = await fetchText(`/problems/${p.dir}/spec.js`);
+    } catch(e) {
+      alert(`Could not load spec: ${e.message}`);
+      running = false;
+      runBtn.classList.remove('loading');
+      return;
+    }
+
+    // Inline all lib scripts + mocha CSS
+    const libScripts = LIB_SCRIPTS.map(url =>
+      `<script>${libCache[url]}<\/script>`
+    ).join('\n');
+
+    // Also load mocha CSS inline via a data URI to avoid cross-origin issues
+    let mochaCss = '';
+    try {
+      mochaCss = await fetchText('/lib/css/mocha.css');
+    } catch (_) {}
+
+    const srcdoc = `<!DOCTYPE html>
+<html>
+<head>
+  <style>${mochaCss}</style>
+  ${libScripts}
+</head>
+<body>
+  <div id="mocha"></div>
+  <script>
+    // User solution
+    ${code}
+  <\/script>
+  <script>
+    // Problem spec
+    ${specCode}
+  <\/script>
+</body>
+</html>`;
+
+    // Listen for results
+    const handler = (event) => {
+      if (!event.data || event.data.type !== 'mocha-results') return;
+      window.removeEventListener('message', handler);
+
+      const data = event.data;
+      resultCache[p.num] = data;
+      renderResults(data);
+
+      // Update sidebar dot
+      buildSidebar(searchInput.value);
+
+      running = false;
+      runBtn.classList.remove('loading');
+    };
+    window.addEventListener('message', handler);
+
+    // Timeout failsafe (5 seconds)
+    const timeout = setTimeout(() => {
+      window.removeEventListener('message', handler);
+      running = false;
+      runBtn.classList.remove('loading');
+      resultsBody.innerHTML = `<div class="idle-state" style="color:var(--fail)">⚠️ Test run timed out.<br/>Check your code for infinite loops.</div>`;
+    }, 10000);
+
+    // Clear timeout on success
+    const origHandler = handler;
+    window.addEventListener('message', function clearTimeout_(e) {
+      if (e.data && e.data.type === 'mocha-results') {
+        clearTimeout(timeout);
+        window.removeEventListener('message', clearTimeout_);
+      }
+    });
+
+    // Write srcdoc to trigger iframe load
+    testFrame.srcdoc = srcdoc;
+  }
+
+  // ── Keyboard shortcut: Ctrl+Enter / Cmd+Enter to run ─────────────
+  codeEditor.addEventListener('keydown', (e) => {
+    // Handle Tab key for indentation
+    if (e.key === 'Tab') {
+      e.preventDefault();
+      const start = codeEditor.selectionStart;
+      const end   = codeEditor.selectionEnd;
+      codeEditor.value = codeEditor.value.slice(0, start) + '  ' + codeEditor.value.slice(end);
+      codeEditor.selectionStart = codeEditor.selectionEnd = start + 2;
+      return;
+    }
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+      e.preventDefault();
+      runTests();
+    }
+  });
+
+  // ── Wire up controls ──────────────────────────────────────────────
+  prevBtn.addEventListener('click', () => {
+    const n = manifest[currentIdx].num;
+    if (n > 1) { goToProblem(n - 1); buildSidebar(searchInput.value); }
+  });
+
+  nextBtn.addEventListener('click', () => {
+    const n = manifest[currentIdx].num;
+    if (n < manifest.length) { goToProblem(n + 1); buildSidebar(searchInput.value); }
+  });
+
+  runBtn.addEventListener('click', runTests);
+
+  resetBtn.addEventListener('click', () => {
+    const p = manifest[currentIdx];
+    codeEditor.value = stubCache[p.num] || '';
+    userCode[p.num] = undefined;
+  });
+
+  searchInput.addEventListener('input', () => {
+    buildSidebar(searchInput.value);
+  });
+
+  // Handle browser back/forward
+  window.addEventListener('popstate', (e) => {
+    const n = e.state?.problem || getProblemFromURL();
+    goToProblem(n, false);
+    buildSidebar(searchInput.value);
+  });
+
+  // ── Boot sequence ─────────────────────────────────────────────────
+  async function init() {
+    try {
+      await Promise.all([loadManifest(), prefetchLibs()]);
+
+      buildSidebar();
+
+      const startProblem = getProblemFromURL();
+      await goToProblem(startProblem, false);
+
+      // Replace state so back button works from initial load
+      window.history.replaceState({ problem: startProblem }, '', `?problem=${startProblem}`);
+
+      overlay.classList.add('hidden');
+      setTimeout(() => overlay.style.display = 'none', 350);
+    } catch (err) {
+      document.querySelector('.loader-text').textContent = `Error: ${err.message}`;
+      console.error(err);
+    }
+  }
+
+  init();
+})();
+</script>
+</body>
+</html>
