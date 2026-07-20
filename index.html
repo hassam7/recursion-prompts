@@ -330,25 +330,48 @@
       flex: 1;
       position: relative;
       overflow: hidden;
+      background: #0b0d14;
     }
 
     #code-editor {
       width: 100%;
       height: 100%;
-      background: var(--bg);
-      color: #c9d1e3;
       font-family: 'JetBrains Mono', 'Fira Code', monospace;
       font-size: 13.5px;
-      line-height: 1.7;
-      padding: 16px 20px;
-      border: none;
-      outline: none;
-      resize: none;
-      tab-size: 2;
-      white-space: pre;
-      overflow: auto;
-      scrollbar-width: thin;
-      scrollbar-color: var(--border2) transparent;
+    }
+
+    .ace_editor {
+      background: #0b0d14 !important;
+      color: #c9d1e3;
+    }
+
+    .ace_gutter {
+      background: #10131d !important;
+      color: #475569 !important;
+      border-right: 1px solid var(--border);
+    }
+
+    .ace_gutter-active-line,
+    .ace_marker-layer .ace_active-line {
+      background: rgba(124,111,239,0.08) !important;
+    }
+
+    .ace_cursor {
+      color: var(--accent2) !important;
+    }
+
+    .ace_scrollbar::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+
+    .ace_scrollbar::-webkit-scrollbar-thumb {
+      background: var(--border2);
+      border-radius: 999px;
+    }
+
+    .ace_scrollbar::-webkit-scrollbar-track {
+      background: transparent;
     }
 
     /* ── Results Panel ───────────────────────────────────────────── */
@@ -597,7 +620,7 @@
     </div>
 
     <div class="editor-wrapper">
-      <textarea id="code-editor" spellcheck="false" autocorrect="off" autocapitalize="off"></textarea>
+      <div id="code-editor"></div>
     </div>
   </main>
 
@@ -628,6 +651,9 @@
 <!-- Hidden iframe for sandboxed test execution -->
 <iframe id="test-frame" sandbox="allow-scripts allow-same-origin"></iframe>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.43.3/ace.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.43.3/mode-javascript.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.43.3/theme-tomorrow_night.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script type="module" src="/src/main.js"></script>
 </body>
 </html>
