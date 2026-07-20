@@ -65,34 +65,182 @@ node server.js
 
 ```
 recursion-prompts/
-├── index.html            ← Playground entry point (open this at localhost:3000)
-├── server.js             ← Zero-dependency Node.js static file server
-├── problems/             ← One folder per problem (auto-generated)
-│   ├── manifest.json     ← Problem index used by the UI
+├── index.html              ← App shell and static DOM structure
+├── server.js               ← Zero-dependency Node.js static file server
+├── package.json            ← npm scripts; currently only starts the server
+├── lib/                    ← Browser test dependencies: Mocha, Chai, Sinon, jQuery
+│   └── css/mocha.css       ← Mocha styles injected into the test iframe
+├── problems/               ← One folder per challenge
+│   ├── manifest.json       ← Problem index used by the UI
 │   ├── 01-factorial/
-│   │   ├── problem.js    ← Starter stub shown in the editor
-│   │   └── spec.js       ← Isolated test suite for this problem
-│   └── …  (40 folders total)
+│   │   ├── problem.js      ← Starter stub shown in the editor
+│   │   └── spec.js         ← Isolated test suite for this problem
+│   └── ...                 ← 40 folders total
 ├── src/
-│   └── recursion.js      ← Original source with all function stubs
-├── spec/
-│   ├── part1.js          ← Full test suite for problems 1–36
-│   └── part2.js          ← Full test suite for problems 37–40
-├── lib/                  ← Test libraries (Mocha, Chai, Sinon, jQuery)
-├── scripts/
-│   └── generate-problems.js  ← Regenerate the problems/ folder from source
-└── SpecRunner.html       ← Original Mocha HTML runner (still works)
+│   ├── main.js             ← Composition root; wires services, state, and views
+│   ├── app-controller.js   ← Coordinates app startup, navigation, reset, and tests
+│   ├── app-store.js        ← In-memory state for manifest, code, results, and filters
+│   ├── problem-service.js  ← Fetches manifest, stubs, specs, and test libraries
+│   ├── test-runner.js      ← Runs user code and specs inside a sandboxed iframe
+│   ├── analytics.js        ← Small wrapper around analytics events
+│   ├── *-view.js           ← DOM view adapters for header/sidebar/editor/results/overlay
+│   └── *-view.css          ← Component styles matching the corresponding view modules
+└── README.md
 ```
+
+---
+
+### Application Architecture
+
+The app is a build-free browser application. There is no bundler, transpiler, or framework runtime. `server.js` serves static files, and the browser loads native ES modules directly from `src/`.
+
+#### HTML
+
+`index.html` is the static app shell. It owns the document metadata, Google Fonts, analytics snippet, stylesheet links, and the root DOM regions used by the JavaScript views.
+
+The main layout is split into these landmarks:
+
+- `header`: navigation controls, problem counter, run button, and the small-screen problems menu button
+- `.sidebar`: problem list and search input
+- `.editor-panel`: problem title, metadata, reset control, and code editor host
+- `.results-panel`: progress, pass/fail counts, and test result output
+- `#loading-overlay`: startup loading state
+- `#test-frame`: hidden iframe used to run tests safely away from the main UI
+
+The HTML intentionally stays mostly declarative. Dynamic lists, editor content, test output, loading state, and button behavior are handled by view classes in JavaScript.
+
+#### JavaScript
+
+`src/main.js` is the composition root. It creates the store, services, runner, analytics object, view objects, and the `AppController`, then calls `controller.init()`.
+
+The controller is the main coordinator:
+
+- `AppController` binds UI events and decides what happens when users navigate, search, reset, or run tests.
+- `AppStore` keeps all runtime state in memory: current problem, cached stubs, user edits, test results, search filter, and running status.
+- `ProblemService` fetches static problem data from `problems/` and test dependencies from `lib/`.
+- `TestRunner` builds an iframe document containing the user code, the problem spec, and the test libraries. It listens for posted Mocha results and returns them to the controller.
+- View classes such as `HeaderView`, `SidebarView`, `EditorView`, `ResultsView`, and `OverlayView` are thin DOM adapters. They render UI and expose event-binding methods, but they do not own application decisions.
+
+The editor uses Ace, but Ace is loaded lazily. `EditorView` creates a plain textarea fallback immediately, starts loading Ace in parallel with app startup, and then swaps the textarea for Ace when the library finishes loading. This keeps the app usable even when the Ace CDN is slow.
+
+#### Data and Test Flow
+
+Startup flow:
+
+1. `main.js` creates the app objects.
+2. `AppController.init()` binds events.
+3. `EditorView.init()` starts loading Ace in the background.
+4. `ProblemService` loads `problems/manifest.json` and prefetches test libraries.
+5. The controller renders the header/sidebar and opens the initial problem from the URL.
+6. The loading overlay is hidden after the first problem is ready, without waiting for Ace.
+
+Test run flow:
+
+1. The user clicks `Run Tests` or presses `Ctrl/Cmd + Enter`.
+2. `AppController.runTests()` reads code from `EditorView.getCode()`.
+3. The current problem spec and Mocha CSS are fetched.
+4. `TestRunner` injects the user code, spec, and libraries into the hidden iframe.
+5. The iframe posts test results back to the main page.
+6. `ResultsView` renders the pass/fail summary and individual test rows.
+
+---
+
+### CSS Architecture
+
+CSS lives in `src/` and is named to match the JavaScript view or app area it supports:
+
+- `app.css`: reset, design tokens, global layout, shared keyframes, scrollbar styling, and app-wide responsive grid rules
+- `header-view.css`: header, navigation, run button, and hamburger menu styling
+- `sidebar-view.css`: problem drawer, search input, problem list rows, active state, and status dots
+- `editor-view.css`: problem prompt area, editor toolbar, Ace editor styling, and textarea fallback styling
+- `results-view.css`: test results header, progress bar, result rows, errors, and summary boxes
+- `overlay-view.css`: startup loading overlay
+
+The CSS files are linked in `index.html` in dependency order: shared app styles first, then component styles. This mirrors the JavaScript structure and makes ownership easier to find: when changing `ResultsView`, start with `results-view.js` and `results-view.css`.
+
+#### Cascade Layers
+
+The styles use CSS cascade layers with `@layer`:
+
+```css
+@layer reset, tokens, layout, components, responsive;
+```
+
+Layers give the cascade an explicit order. This makes stylesheet order less fragile and avoids relying only on selector specificity.
+
+The layers are used like this:
+
+- `reset`: universal box model and margin reset
+- `tokens`: CSS custom properties such as colors, spacing radii, and transition timing
+- `layout`: global document and app grid layout
+- `components`: component-level rules for header, sidebar, editor, results, overlay, and animations
+- `responsive`: media queries that adapt the layout for tablets and small screens
+
+A rule in a later layer wins over a rule in an earlier layer when specificity is otherwise comparable. For example, responsive rules can override component layout without needing overly specific selectors.
+
+#### CSS Custom Properties
+
+Design values live in `:root` as custom properties:
+
+```css
+:root {
+  --bg: #0b0d14;
+  --surface: #13151f;
+  --accent: #7c6fef;
+  --text: #e2e8f0;
+  --radius-sm: 8px;
+}
+```
+
+Using tokens keeps colors and shared values consistent across components. If the theme changes later, most visual updates should happen in `app.css` rather than across every component file.
+
+#### Grid Layout
+
+The desktop shell uses CSS Grid:
+
+```css
+.app {
+  grid-template-areas:
+    "header header header"
+    "sidebar editor results";
+}
+```
+
+This maps directly to the HTML regions and keeps the main app layout readable. On smaller screens, the grid changes to a single column:
+
+```css
+grid-template-areas:
+  "header"
+  "editor"
+  "results";
+```
+
+The problems list becomes a fixed-position drawer opened by the hamburger button, while the editor and test output stack vertically.
+
+#### Responsive Rules
+
+Responsive CSS is grouped by responsibility:
+
+- `app.css` changes the global grid and document scrolling.
+- `header-view.css` wraps the header and shows the hamburger button.
+- `sidebar-view.css` turns the problem list into a drawer and backdrop.
+- `editor-view.css` and `results-view.css` define minimum panel heights for stacked layouts.
+
+This keeps each file responsible for its own component behavior while still allowing the whole app to adapt together.
+
+#### Fallback and Third-Party Styling
+
+`EditorView` creates a `.code-editor-fallback` textarea while Ace is loading. `editor-view.css` styles that fallback to occupy the same space as the Ace editor, so users can type immediately.
+
+Ace injects its own DOM and class names, so `editor-view.css` also includes targeted rules for classes like `.ace_editor`, `.ace_gutter`, and `.ace_cursor`. A few Ace rules use `!important` because Ace themes also write strong editor styles; the overrides are intentionally scoped to Ace-specific classes.
 
 ---
 
 ### Regenerating Problem Files
 
-The `problems/` folder is generated from `src/recursion.js` and `spec/part1.js` / `spec/part2.js`. If you modify the source or specs you can regenerate:
+The current playground reads directly from the checked-in `problems/` folders. If you change a challenge, update the relevant `problem.js`, `spec.js`, and `manifest.json` entry together.
 
-```bash
-node scripts/generate-problems.js
-```
+Older versions of this repository generated `problems/` from larger source/spec files. If you bring that generator back, keep generated files and the manifest in sync before opening a pull request.
 
 ---
 
