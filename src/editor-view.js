@@ -15,13 +15,16 @@ export class EditorView {
     this.resetBtn = resetBtn;
     this.editor = null;
     this.pendingCode = '';
+    this.fallbackEditor = this.createFallbackEditor(codeEditor);
     this.runShortcutHandler = null;
   }
 
   async init() {
     await loadAce();
+    const code = this.getCode();
+    this.removeFallbackEditor();
     this.editor = this.createEditor(this.codeEditor);
-    this.setCode(this.pendingCode);
+    this.setCode(code);
 
     if (this.runShortcutHandler) {
       this.addRunShortcut(this.runShortcutHandler);
@@ -36,6 +39,10 @@ export class EditorView {
 
   getCode() {
     if (!this.editor) {
+      if (this.fallbackEditor) {
+        return this.fallbackEditor.value;
+      }
+
       return this.pendingCode;
     }
 
@@ -46,6 +53,10 @@ export class EditorView {
     this.pendingCode = code || '';
 
     if (!this.editor) {
+      if (this.fallbackEditor) {
+        this.fallbackEditor.value = this.pendingCode;
+      }
+
       return;
     }
 
@@ -61,10 +72,58 @@ export class EditorView {
     this.runShortcutHandler = handler;
 
     if (!this.editor) {
+      this.addFallbackRunShortcut(handler);
       return;
     }
 
     this.addRunShortcut(handler);
+  }
+
+  createFallbackEditor(element) {
+    const fallbackEditor = document.createElement('textarea');
+    fallbackEditor.className = 'code-editor-fallback';
+    fallbackEditor.spellcheck = false;
+    fallbackEditor.autocorrect = 'off';
+    fallbackEditor.autocapitalize = 'off';
+    fallbackEditor.addEventListener('input', () => {
+      this.pendingCode = fallbackEditor.value;
+    });
+    element.appendChild(fallbackEditor);
+
+    return fallbackEditor;
+  }
+
+  removeFallbackEditor() {
+    if (!this.fallbackEditor) {
+      return;
+    }
+
+    this.fallbackEditor.remove();
+    this.fallbackEditor = null;
+  }
+
+  addFallbackRunShortcut(handler) {
+    if (!this.fallbackEditor) {
+      return;
+    }
+
+    this.fallbackEditor.addEventListener('keydown', (event) => {
+      if (event.key === 'Tab') {
+        event.preventDefault();
+        const start = this.fallbackEditor.selectionStart;
+        const end = this.fallbackEditor.selectionEnd;
+        this.fallbackEditor.value = `${this.fallbackEditor.value.slice(0, start)}  ${this.fallbackEditor.value.slice(end)}`;
+        this.fallbackEditor.selectionStart = start + 2;
+        this.fallbackEditor.selectionEnd = start + 2;
+        this.pendingCode = this.fallbackEditor.value;
+        return;
+      }
+
+      if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
+        event.preventDefault();
+        handler();
+      }
+    });
   }
 
   addRunShortcut(handler) {
