@@ -96,6 +96,7 @@ export class AppController {
       const [manifest, libCache] = await Promise.all([
         this.problemService.loadManifest(),
         this.problemService.prefetchLibs(),
+        this.editorView.init(),
       ]);
 
       this.store.setManifest(manifest);

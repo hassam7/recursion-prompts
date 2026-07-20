@@ -1,10 +1,29 @@
+const ACE_BASE_URL = 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.43.3';
+const ACE_SCRIPTS = [
+  `${ACE_BASE_URL}/ace.min.js`,
+  `${ACE_BASE_URL}/mode-javascript.min.js`,
+  `${ACE_BASE_URL}/theme-tomorrow_night.min.js`,
+];
+
+let aceLoadPromise;
+
 export class EditorView {
   constructor({ problemTitle, partTag, codeEditor, resetBtn }) {
     this.problemTitle = problemTitle;
     this.partTag = partTag;
     this.codeEditor = codeEditor;
     this.resetBtn = resetBtn;
-    this.editor = this.createEditor(codeEditor);
+    this.editor = null;
+    this.runShortcutHandler = null;
+  }
+
+  async init() {
+    await loadAce();
+    this.editor = this.createEditor(this.codeEditor);
+
+    if (this.runShortcutHandler) {
+      this.addRunShortcut(this.runShortcutHandler);
+    }
   }
 
   renderProblem(problem, code) {
@@ -27,6 +46,16 @@ export class EditorView {
   }
 
   bindRunShortcut(handler) {
+    this.runShortcutHandler = handler;
+
+    if (!this.editor) {
+      return;
+    }
+
+    this.addRunShortcut(handler);
+  }
+
+  addRunShortcut(handler) {
     this.editor.commands.addCommand({
       name: 'runTests',
       bindKey: { win: 'Ctrl-Enter', mac: 'Command-Enter' },
@@ -49,9 +78,6 @@ export class EditorView {
       highlightActiveLine: true,
       highlightSelectedWord: true,
       displayIndentGuides: true,
-      enableBasicAutocompletion: false,
-      enableLiveAutocompletion: false,
-      enableSnippets: false,
       useWorker: false,
       wrap: false,
     });
@@ -62,4 +88,39 @@ export class EditorView {
 
     return editor;
   }
+}
+
+
+function loadAce() {
+  if (window.ace) {
+    return Promise.resolve();
+  }
+
+  if (!aceLoadPromise) {
+    aceLoadPromise = ACE_SCRIPTS.reduce(
+      (promise, src) => promise.then(() => loadScript(src)),
+      Promise.resolve(),
+    );
+  }
+
+  return aceLoadPromise;
+}
+
+function loadScript(src) {
+  return new Promise((resolve, reject) => {
+    const existingScript = document.querySelector(`script[src="${src}"]`);
+    if (existingScript) {
+      existingScript.addEventListener('load', resolve, { once: true });
+      existingScript.addEventListener('error', reject, { once: true });
+      return;
+    }
+
+    const script = document.createElement('script');
+    script.src = src;
+    script.crossOrigin = 'anonymous';
+    script.referrerPolicy = 'no-referrer';
+    script.onload = resolve;
+    script.onerror = () => reject(new Error(`Could not load ${src}`));
+    document.head.appendChild(script);
+  });
 }
