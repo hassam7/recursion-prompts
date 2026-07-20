@@ -1,675 +1,963 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Recursion Prompts — Interactive Playground</title>
-  <meta name="description" content="Practice recursion in JavaScript with 40 interactive challenges. Write your solution, run tests, and see results in real time." />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-K2PDEJP5B5"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-K2PDEJP5B5');
-  </script>
-
-  <style>
-    /* ── Reset & Tokens ─────────────────────────────────────────── */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --bg:          #0b0d14;
-      --surface:     #13151f;
-      --surface2:    #1a1d2b;
-      --border:      rgba(255,255,255,0.07);
-      --border2:     rgba(255,255,255,0.12);
-      --accent:      #7c6fef;
-      --accent2:     #9d93f5;
-      --accent-glow: rgba(124,111,239,0.35);
-      --pass:        #34d399;
-      --pass-bg:     rgba(52,211,153,0.08);
-      --fail:        #f87171;
-      --fail-bg:     rgba(248,113,113,0.08);
-      --pending:     #fbbf24;
-      --text:        #e2e8f0;
-      --text2:       #94a3b8;
-      --text3:       #475569;
-      --radius:      12px;
-      --radius-sm:   8px;
-      --transition:  0.2s cubic-bezier(0.4,0,0.2,1);
-    }
-
-    html, body {
-      height: 100%;
-      font-family: 'Inter', system-ui, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      overflow: hidden;
-    }
-
-    /* ── Layout ─────────────────────────────────────────────────── */
-    .app {
-      display: grid;
-      grid-template-rows: 56px 1fr;
-      grid-template-columns: 260px 1fr 380px;
-      grid-template-areas:
-        "header header header"
-        "sidebar editor results";
-      height: 100vh;
-    }
-
-    /* ── Header ─────────────────────────────────────────────────── */
-    header {
-      grid-area: header;
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      padding: 0 20px;
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      position: relative;
-      z-index: 10;
-    }
-
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: 700;
-      font-size: 15px;
-      letter-spacing: -0.3px;
-    }
-
-    .logo-icon {
-      width: 28px; height: 28px;
-      background: linear-gradient(135deg, var(--accent), #a78bfa);
-      border-radius: 7px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 14px;
-    }
-
-    .header-center {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-    }
-
-    .nav-btn {
-      display: flex; align-items: center; gap: 6px;
-      padding: 6px 14px;
-      background: var(--surface2);
-      border: 1px solid var(--border2);
-      border-radius: var(--radius-sm);
-      color: var(--text2);
-      font-size: 13px;
-      font-family: inherit;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all var(--transition);
-    }
-    .nav-btn:hover:not(:disabled) {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: #fff;
-      box-shadow: 0 0 20px var(--accent-glow);
-    }
-    .nav-btn:disabled { opacity: 0.35; cursor: not-allowed; }
-
-    .problem-badge {
-      display: flex; align-items: center; gap: 8px;
-      background: rgba(124,111,239,0.1);
-      border: 1px solid rgba(124,111,239,0.25);
-      border-radius: 20px;
-      padding: 4px 14px;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--accent2);
-    }
-
-    .run-btn {
-      margin-left: auto;
-      display: flex; align-items: center; gap: 8px;
-      padding: 8px 20px;
-      background: linear-gradient(135deg, var(--accent), #a78bfa);
-      border: none;
-      border-radius: var(--radius-sm);
-      color: #fff;
-      font-size: 13px;
-      font-family: inherit;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all var(--transition);
-      box-shadow: 0 4px 15px var(--accent-glow);
-    }
-    .run-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 25px var(--accent-glow); }
-    .run-btn:active { transform: translateY(0); }
-    .run-btn.loading { opacity: 0.7; cursor: not-allowed; }
-    .run-btn .spinner {
-      width: 14px; height: 14px;
-      border: 2px solid rgba(255,255,255,0.3);
-      border-top-color: #fff;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-      display: none;
-    }
-    .run-btn.loading .spinner { display: block; }
-    .run-btn.loading .run-label { display: none; }
-
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* ── Sidebar ─────────────────────────────────────────────────── */
-    .sidebar {
-      grid-area: sidebar;
-      background: var(--surface);
-      border-right: 1px solid var(--border);
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-
-    .sidebar-header {
-      padding: 14px 16px 10px;
-      font-size: 10px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: var(--text3);
-      border-bottom: 1px solid var(--border);
-      flex-shrink: 0;
-    }
-
-    .sidebar-search {
-      padding: 10px 12px;
-      flex-shrink: 0;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .sidebar-search input {
-      width: 100%;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 6px 10px;
-      color: var(--text);
-      font-size: 12px;
-      font-family: inherit;
-      outline: none;
-      transition: border-color var(--transition);
-    }
-    .sidebar-search input:focus { border-color: var(--accent); }
-    .sidebar-search input::placeholder { color: var(--text3); }
-
-    .sidebar-list {
-      flex: 1;
-      overflow-y: auto;
-      padding: 6px 0;
-      scrollbar-width: thin;
-      scrollbar-color: var(--border2) transparent;
-    }
-
-    .problem-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 8px 14px;
-      cursor: pointer;
-      transition: background var(--transition);
-      border-left: 3px solid transparent;
-    }
-    .problem-item:hover { background: var(--surface2); }
-    .problem-item.active {
-      background: rgba(124,111,239,0.1);
-      border-left-color: var(--accent);
-    }
-
-    .problem-num {
-      font-size: 10px;
-      font-weight: 700;
-      color: var(--text3);
-      min-width: 22px;
-      font-family: 'JetBrains Mono', monospace;
-    }
-    .problem-item.active .problem-num { color: var(--accent2); }
-
-    .problem-name {
-      font-size: 12.5px;
-      color: var(--text2);
-      flex: 1;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .problem-item.active .problem-name { color: var(--text); font-weight: 500; }
-
-    .problem-status {
-      width: 7px; height: 7px;
-      border-radius: 50%;
-      background: var(--border2);
-      flex-shrink: 0;
-      transition: background var(--transition);
-    }
-    .problem-status.pass { background: var(--pass); box-shadow: 0 0 6px var(--pass); }
-    .problem-status.fail { background: var(--fail); box-shadow: 0 0 6px var(--fail); }
-
-    /* ── Editor Panel ────────────────────────────────────────────── */
-    .editor-panel {
-      grid-area: editor;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      background: var(--bg);
-    }
-
-    .problem-header {
-      padding: 16px 20px 12px;
-      border-bottom: 1px solid var(--border);
-      flex-shrink: 0;
-    }
-
-    .problem-title {
-      font-size: 17px;
-      font-weight: 700;
-      letter-spacing: -0.4px;
-      margin-bottom: 4px;
-    }
-
-    .problem-meta {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .meta-tag {
-      font-size: 10px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      padding: 2px 8px;
-      border-radius: 4px;
-      background: rgba(124,111,239,0.12);
-      color: var(--accent2);
-    }
-
-    .editor-toolbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 8px 14px;
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      flex-shrink: 0;
-    }
-
-    .toolbar-label {
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      color: var(--text3);
-    }
-
-    .reset-btn {
-      font-size: 11px;
-      color: var(--text3);
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-family: inherit;
-      padding: 2px 6px;
-      border-radius: 4px;
-      transition: color var(--transition);
-    }
-    .reset-btn:hover { color: var(--text2); }
-
-    .editor-wrapper {
-      flex: 1;
-      position: relative;
-      overflow: hidden;
-      background: #0b0d14;
-    }
-
-    #code-editor {
-      width: 100%;
-      height: 100%;
-      font-family: 'JetBrains Mono', 'Fira Code', monospace;
-      font-size: 13.5px;
-    }
-
-    .code-editor-fallback {
-      width: 100%;
-      height: 100%;
-      background: #0b0d14;
-      color: #c9d1e3;
-      font-family: 'JetBrains Mono', 'Fira Code', monospace;
-      font-size: 13.5px;
-      line-height: 1.7;
-      padding: 16px 20px;
-      border: none;
-      outline: none;
-      resize: none;
-      tab-size: 2;
-      white-space: pre;
-      overflow: auto;
-      scrollbar-width: thin;
-      scrollbar-color: var(--border2) transparent;
-    }
-
-    .ace_editor {
-      background: #0b0d14 !important;
-      color: #c9d1e3;
-    }
-
-    .ace_gutter {
-      background: #10131d !important;
-      color: #475569 !important;
-      border-right: 1px solid var(--border);
-    }
-
-    .ace_gutter-active-line,
-    .ace_marker-layer .ace_active-line {
-      background: rgba(124,111,239,0.08) !important;
-    }
-
-    .ace_cursor {
-      color: var(--accent2) !important;
-    }
-
-    .ace_scrollbar::-webkit-scrollbar {
-      width: 10px;
-      height: 10px;
-    }
-
-    .ace_scrollbar::-webkit-scrollbar-thumb {
-      background: var(--border2);
-      border-radius: 999px;
-    }
-
-    .ace_scrollbar::-webkit-scrollbar-track {
-      background: transparent;
-    }
-
-    /* ── Results Panel ───────────────────────────────────────────── */
-    .results-panel {
-      grid-area: results;
-      display: flex;
-      flex-direction: column;
-      background: var(--surface);
-      border-left: 1px solid var(--border);
-      overflow: hidden;
-    }
-
-    .results-header {
-      padding: 14px 16px 10px;
-      border-bottom: 1px solid var(--border);
-      flex-shrink: 0;
-    }
-
-    .results-title {
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: var(--text3);
-      margin-bottom: 10px;
-    }
-
-    .progress-bar-wrap {
-      height: 4px;
-      background: var(--surface2);
-      border-radius: 2px;
-      overflow: hidden;
-      margin-bottom: 8px;
-    }
-
-    .progress-bar {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, var(--accent), var(--pass));
-      border-radius: 2px;
-      transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
-    }
-
-    .stats-row {
-      display: flex;
-      gap: 12px;
-      font-size: 11px;
-    }
-
-    .stat { color: var(--text3); }
-    .stat span { font-weight: 700; }
-    .stat .pass-count  { color: var(--pass); }
-    .stat .fail-count  { color: var(--fail); }
-    .stat .total-count { color: var(--text2); }
-
-    .results-body {
-      flex: 1;
-      overflow-y: auto;
-      padding: 8px 0;
-      scrollbar-width: thin;
-      scrollbar-color: var(--border2) transparent;
-    }
-
-    /* Empty / idle state */
-    .idle-state {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100%;
-      gap: 10px;
-      color: var(--text3);
-      font-size: 13px;
-      text-align: center;
-      padding: 20px;
-    }
-
-    .idle-state .idle-icon {
-      font-size: 36px;
-      opacity: 0.5;
-    }
-
-    .test-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      padding: 9px 14px;
-      border-bottom: 1px solid var(--border);
-      animation: fadeIn 0.25s ease;
-      transition: background var(--transition);
-    }
-    .test-item:hover { background: var(--surface2); }
-    .test-item:last-child { border-bottom: none; }
-
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
-    @keyframes passAnim { 0%,100%{transform:scale(1)} 50%{transform:scale(1.3)} }
-    @keyframes failShake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-3px)} 75%{transform:translateX(3px)} }
-
-    .test-icon {
-      font-size: 12px;
-      margin-top: 1px;
-      flex-shrink: 0;
-    }
-
-    .test-item.pass .test-icon { animation: passAnim 0.4s ease; }
-    .test-item.fail .test-icon { animation: failShake 0.4s ease; }
-
-    .test-content { flex: 1; min-width: 0; }
-
-    .test-title {
-      font-size: 12px;
-      line-height: 1.4;
-      color: var(--text);
-    }
-
-    .test-error {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10.5px;
-      color: var(--fail);
-      margin-top: 4px;
-      padding: 6px 8px;
-      background: var(--fail-bg);
-      border-radius: 5px;
-      white-space: pre-wrap;
-      word-break: break-all;
-      display: none;
-    }
-    .test-item.fail .test-error { display: block; }
-
-    .test-item.pass { border-left: 2px solid var(--pass); padding-left: 12px; }
-    .test-item.fail { border-left: 2px solid var(--fail); padding-left: 12px; }
-
-    /* Summary box */
-    .summary-box {
-      padding: 12px 14px;
-      margin: 10px 12px;
-      border-radius: var(--radius);
-      font-size: 13px;
-      font-weight: 600;
-      text-align: center;
-      display: none;
-    }
-    .summary-box.all-pass {
-      background: var(--pass-bg);
-      border: 1px solid rgba(52,211,153,0.25);
-      color: var(--pass);
-    }
-    .summary-box.has-fail {
-      background: var(--fail-bg);
-      border: 1px solid rgba(248,113,113,0.2);
-      color: var(--fail);
-    }
-
-    /* iframe (hidden) */
-    #test-frame {
-      display: none;
-      width: 0; height: 0;
-      border: none;
-      position: absolute;
-      left: -9999px;
-    }
-
-    /* ── Scrollbar styling ───────────────────────────────────────── */
-    ::-webkit-scrollbar { width: 5px; height: 5px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
-
-    /* ── Loading overlay ─────────────────────────────────────────── */
-    #loading-overlay {
-      position: fixed; inset: 0;
-      background: var(--bg);
-      display: flex; align-items: center; justify-content: center;
-      flex-direction: column;
-      gap: 12px;
-      z-index: 100;
-      transition: opacity 0.3s ease;
-    }
-    #loading-overlay.hidden { opacity: 0; pointer-events: none; }
-    .loader-ring {
-      width: 36px; height: 36px;
-      border: 3px solid var(--border2);
-      border-top-color: var(--accent);
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-    .loader-text { font-size: 13px; color: var(--text3); }
-  </style>
-</head>
-<body>
-
-<!-- Loading overlay -->
-<div id="loading-overlay">
-  <div class="loader-ring"></div>
-  <div class="loader-text">Loading problems…</div>
-</div>
-
-<div class="app">
-
-  <!-- ── Header ─────────────────────────────────────────────────── -->
-  <header>
-    <div class="logo">
-      <div class="logo-icon">🔁</div>
-      Recursion Prompts
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Recursion Prompts — Interactive Playground</title>
+    <meta
+      name="description"
+      content="Practice recursion in JavaScript with 40 interactive challenges. Write your solution, run tests, and see results in real time."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-K2PDEJP5B5"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+      gtag("config", "G-K2PDEJP5B5");
+    </script>
+
+    <style>
+      /* ── Reset & Tokens ─────────────────────────────────────────── */
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --bg: #0b0d14;
+        --surface: #13151f;
+        --surface2: #1a1d2b;
+        --border: rgba(255, 255, 255, 0.07);
+        --border2: rgba(255, 255, 255, 0.12);
+        --accent: #7c6fef;
+        --accent2: #9d93f5;
+        --accent-glow: rgba(124, 111, 239, 0.35);
+        --pass: #34d399;
+        --pass-bg: rgba(52, 211, 153, 0.08);
+        --fail: #f87171;
+        --fail-bg: rgba(248, 113, 113, 0.08);
+        --pending: #fbbf24;
+        --text: #e2e8f0;
+        --text2: #94a3b8;
+        --text3: #475569;
+        --radius: 12px;
+        --radius-sm: 8px;
+        --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      html,
+      body {
+        height: 100%;
+        font-family: "Inter", system-ui, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        overflow: hidden;
+      }
+
+      /* ── Layout ─────────────────────────────────────────────────── */
+      .app {
+        display: grid;
+        grid-template-rows: 56px 1fr;
+        grid-template-columns: 260px 1fr 380px;
+        grid-template-areas:
+          "header header header"
+          "sidebar editor results";
+        height: 100vh;
+      }
+
+      /* ── Header ─────────────────────────────────────────────────── */
+      header {
+        grid-area: header;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 0 20px;
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+        position: relative;
+        z-index: 10;
+      }
+
+      .problems-menu-btn {
+        display: none;
+        width: 36px;
+        height: 36px;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 4px;
+        background: var(--surface2);
+        border: 1px solid var(--border2);
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+      }
+
+      .problems-menu-btn span {
+        width: 16px;
+        height: 2px;
+        background: var(--text2);
+        border-radius: 999px;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 700;
+        font-size: 15px;
+        letter-spacing: -0.3px;
+      }
+
+      .logo-icon {
+        width: 28px;
+        height: 28px;
+        background: linear-gradient(135deg, var(--accent), #a78bfa);
+        border-radius: 7px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+      }
+
+      .header-center {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+      }
+
+      .nav-btn {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 14px;
+        background: var(--surface2);
+        border: 1px solid var(--border2);
+        border-radius: var(--radius-sm);
+        color: var(--text2);
+        font-size: 13px;
+        font-family: inherit;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all var(--transition);
+      }
+      .nav-btn:hover:not(:disabled) {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #fff;
+        box-shadow: 0 0 20px var(--accent-glow);
+      }
+      .nav-btn:disabled {
+        opacity: 0.35;
+        cursor: not-allowed;
+      }
+
+      .problem-badge {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(124, 111, 239, 0.1);
+        border: 1px solid rgba(124, 111, 239, 0.25);
+        border-radius: 20px;
+        padding: 4px 14px;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--accent2);
+      }
+
+      .run-btn {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 20px;
+        background: linear-gradient(135deg, var(--accent), #a78bfa);
+        border: none;
+        border-radius: var(--radius-sm);
+        color: #fff;
+        font-size: 13px;
+        font-family: inherit;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all var(--transition);
+        box-shadow: 0 4px 15px var(--accent-glow);
+      }
+      .run-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 25px var(--accent-glow);
+      }
+      .run-btn:active {
+        transform: translateY(0);
+      }
+      .run-btn.loading {
+        opacity: 0.7;
+        cursor: not-allowed;
+      }
+      .run-btn .spinner {
+        width: 14px;
+        height: 14px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-top-color: #fff;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+        display: none;
+      }
+      .run-btn.loading .spinner {
+        display: block;
+      }
+      .run-btn.loading .run-label {
+        display: none;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* ── Sidebar ─────────────────────────────────────────────────── */
+      .sidebar {
+        grid-area: sidebar;
+        background: var(--surface);
+        border-right: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      .sidebar-backdrop {
+        display: none;
+      }
+
+      .sidebar-header {
+        padding: 14px 16px 10px;
+        font-size: 10px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: var(--text3);
+        border-bottom: 1px solid var(--border);
+        flex-shrink: 0;
+      }
+
+      .sidebar-search {
+        padding: 10px 12px;
+        flex-shrink: 0;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .sidebar-search input {
+        width: 100%;
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 6px 10px;
+        color: var(--text);
+        font-size: 12px;
+        font-family: inherit;
+        outline: none;
+        transition: border-color var(--transition);
+      }
+      .sidebar-search input:focus {
+        border-color: var(--accent);
+      }
+      .sidebar-search input::placeholder {
+        color: var(--text3);
+      }
+
+      .sidebar-list {
+        flex: 1;
+        overflow-y: auto;
+        padding: 6px 0;
+        scrollbar-width: thin;
+        scrollbar-color: var(--border2) transparent;
+      }
+
+      .problem-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 14px;
+        cursor: pointer;
+        transition: background var(--transition);
+        border-left: 3px solid transparent;
+      }
+      .problem-item:hover {
+        background: var(--surface2);
+      }
+      .problem-item.active {
+        background: rgba(124, 111, 239, 0.1);
+        border-left-color: var(--accent);
+      }
+
+      .problem-num {
+        font-size: 10px;
+        font-weight: 700;
+        color: var(--text3);
+        min-width: 22px;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .problem-item.active .problem-num {
+        color: var(--accent2);
+      }
+
+      .problem-name {
+        font-size: 12.5px;
+        color: var(--text2);
+        flex: 1;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .problem-item.active .problem-name {
+        color: var(--text);
+        font-weight: 500;
+      }
+
+      .problem-status {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--border2);
+        flex-shrink: 0;
+        transition: background var(--transition);
+      }
+      .problem-status.pass {
+        background: var(--pass);
+        box-shadow: 0 0 6px var(--pass);
+      }
+      .problem-status.fail {
+        background: var(--fail);
+        box-shadow: 0 0 6px var(--fail);
+      }
+
+      /* ── Editor Panel ────────────────────────────────────────────── */
+      .editor-panel {
+        grid-area: editor;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        background: var(--bg);
+      }
+
+      .problem-header {
+        padding: 16px 20px 12px;
+        border-bottom: 1px solid var(--border);
+        flex-shrink: 0;
+      }
+
+      .problem-title {
+        font-size: 17px;
+        font-weight: 700;
+        letter-spacing: -0.4px;
+        margin-bottom: 4px;
+      }
+
+      .problem-meta {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .meta-tag {
+        font-size: 10px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        padding: 2px 8px;
+        border-radius: 4px;
+        background: rgba(124, 111, 239, 0.12);
+        color: var(--accent2);
+      }
+
+      .editor-toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 8px 14px;
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+        flex-shrink: 0;
+      }
+
+      .toolbar-label {
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        color: var(--text3);
+      }
+
+      .reset-btn {
+        font-size: 11px;
+        color: var(--text3);
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-family: inherit;
+        padding: 2px 6px;
+        border-radius: 4px;
+        transition: color var(--transition);
+      }
+      .reset-btn:hover {
+        color: var(--text2);
+      }
+
+      .editor-wrapper {
+        flex: 1;
+        position: relative;
+        overflow: hidden;
+        background: #0b0d14;
+      }
+
+      #code-editor {
+        width: 100%;
+        height: 100%;
+        font-family: "JetBrains Mono", "Fira Code", monospace;
+        font-size: 13.5px;
+      }
+
+      .code-editor-fallback {
+        width: 100%;
+        height: 100%;
+        background: #0b0d14;
+        color: #c9d1e3;
+        font-family: "JetBrains Mono", "Fira Code", monospace;
+        font-size: 13.5px;
+        line-height: 1.7;
+        padding: 16px 20px;
+        border: none;
+        outline: none;
+        resize: none;
+        tab-size: 2;
+        white-space: pre;
+        overflow: auto;
+        scrollbar-width: thin;
+        scrollbar-color: var(--border2) transparent;
+      }
+
+      .ace_editor {
+        background: #0b0d14 !important;
+        color: #c9d1e3;
+      }
+
+      .ace_gutter {
+        background: #10131d !important;
+        color: #475569 !important;
+        border-right: 1px solid var(--border);
+      }
+
+      .ace_gutter-active-line,
+      .ace_marker-layer .ace_active-line {
+        background: rgba(124, 111, 239, 0.08) !important;
+      }
+
+      .ace_cursor {
+        color: var(--accent2) !important;
+      }
+
+      .ace_scrollbar::-webkit-scrollbar {
+        width: 10px;
+        height: 10px;
+      }
+
+      .ace_scrollbar::-webkit-scrollbar-thumb {
+        background: var(--border2);
+        border-radius: 999px;
+      }
+
+      .ace_scrollbar::-webkit-scrollbar-track {
+        background: transparent;
+      }
+
+      /* ── Results Panel ───────────────────────────────────────────── */
+      .results-panel {
+        grid-area: results;
+        display: flex;
+        flex-direction: column;
+        background: var(--surface);
+        border-left: 1px solid var(--border);
+        overflow: hidden;
+      }
+
+      .results-header {
+        padding: 14px 16px 10px;
+        border-bottom: 1px solid var(--border);
+        flex-shrink: 0;
+      }
+
+      .results-title {
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: var(--text3);
+        margin-bottom: 10px;
+      }
+
+      .progress-bar-wrap {
+        height: 4px;
+        background: var(--surface2);
+        border-radius: 2px;
+        overflow: hidden;
+        margin-bottom: 8px;
+      }
+
+      .progress-bar {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, var(--accent), var(--pass));
+        border-radius: 2px;
+        transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .stats-row {
+        display: flex;
+        gap: 12px;
+        font-size: 11px;
+      }
+
+      .stat {
+        color: var(--text3);
+      }
+      .stat span {
+        font-weight: 700;
+      }
+      .stat .pass-count {
+        color: var(--pass);
+      }
+      .stat .fail-count {
+        color: var(--fail);
+      }
+      .stat .total-count {
+        color: var(--text2);
+      }
+
+      .results-body {
+        flex: 1;
+        overflow-y: auto;
+        padding: 8px 0;
+        scrollbar-width: thin;
+        scrollbar-color: var(--border2) transparent;
+      }
+
+      /* Empty / idle state */
+      .idle-state {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        gap: 10px;
+        color: var(--text3);
+        font-size: 13px;
+        text-align: center;
+        padding: 20px;
+      }
+
+      .idle-state .idle-icon {
+        font-size: 36px;
+        opacity: 0.5;
+      }
+
+      .test-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 9px 14px;
+        border-bottom: 1px solid var(--border);
+        animation: fadeIn 0.25s ease;
+        transition: background var(--transition);
+      }
+      .test-item:hover {
+        background: var(--surface2);
+      }
+      .test-item:last-child {
+        border-bottom: none;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(4px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      @keyframes passAnim {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.3);
+        }
+      }
+      @keyframes failShake {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        25% {
+          transform: translateX(-3px);
+        }
+        75% {
+          transform: translateX(3px);
+        }
+      }
+
+      .test-icon {
+        font-size: 12px;
+        margin-top: 1px;
+        flex-shrink: 0;
+      }
+
+      .test-item.pass .test-icon {
+        animation: passAnim 0.4s ease;
+      }
+      .test-item.fail .test-icon {
+        animation: failShake 0.4s ease;
+      }
+
+      .test-content {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .test-title {
+        font-size: 12px;
+        line-height: 1.4;
+        color: var(--text);
+      }
+
+      .test-error {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10.5px;
+        color: var(--fail);
+        margin-top: 4px;
+        padding: 6px 8px;
+        background: var(--fail-bg);
+        border-radius: 5px;
+        white-space: pre-wrap;
+        word-break: break-all;
+        display: none;
+      }
+      .test-item.fail .test-error {
+        display: block;
+      }
+
+      .test-item.pass {
+        border-left: 2px solid var(--pass);
+        padding-left: 12px;
+      }
+      .test-item.fail {
+        border-left: 2px solid var(--fail);
+        padding-left: 12px;
+      }
+
+      /* Summary box */
+      .summary-box {
+        padding: 12px 14px;
+        margin: 10px 12px;
+        border-radius: var(--radius);
+        font-size: 13px;
+        font-weight: 600;
+        text-align: center;
+        display: none;
+      }
+      .summary-box.all-pass {
+        background: var(--pass-bg);
+        border: 1px solid rgba(52, 211, 153, 0.25);
+        color: var(--pass);
+      }
+      .summary-box.has-fail {
+        background: var(--fail-bg);
+        border: 1px solid rgba(248, 113, 113, 0.2);
+        color: var(--fail);
+      }
+
+      /* iframe (hidden) */
+      #test-frame {
+        display: none;
+        width: 0;
+        height: 0;
+        border: none;
+        position: absolute;
+        left: -9999px;
+      }
+
+      /* ── Scrollbar styling ───────────────────────────────────────── */
+      ::-webkit-scrollbar {
+        width: 5px;
+        height: 5px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--border2);
+        border-radius: 3px;
+      }
+
+      /* ── Loading overlay ─────────────────────────────────────────── */
+      #loading-overlay {
+        position: fixed;
+        inset: 0;
+        background: var(--bg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 12px;
+        z-index: 100;
+        transition: opacity 0.3s ease;
+      }
+      #loading-overlay.hidden {
+        opacity: 0;
+        pointer-events: none;
+      }
+      .loader-ring {
+        width: 36px;
+        height: 36px;
+        border: 3px solid var(--border2);
+        border-top-color: var(--accent);
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+      }
+      .loader-text {
+        font-size: 13px;
+        color: var(--text3);
+      }
+
+      @media (max-width: 1100px) {
+        html,
+        body {
+          overflow: auto;
+        }
+
+        .app {
+          grid-template-columns: 1fr;
+          grid-template-rows: 56px minmax(520px, 62vh) minmax(360px, 38vh);
+          grid-template-areas:
+            "header"
+            "editor"
+            "results";
+          min-height: 100vh;
+          height: auto;
+        }
+
+        header {
+          position: sticky;
+          top: 0;
+        }
+
+        .problems-menu-btn {
+          display: flex;
+          flex-shrink: 0;
+        }
+
+        .sidebar {
+          position: fixed;
+          inset: 56px auto 0 0;
+          z-index: 40;
+          width: min(320px, 88vw);
+          transform: translateX(-100%);
+          transition: transform var(--transition);
+          box-shadow: 24px 0 48px rgba(0, 0, 0, 0.28);
+        }
+
+        .sidebar.open {
+          transform: translateX(0);
+        }
+
+        .sidebar-backdrop {
+          position: fixed;
+          inset: 56px 0 0;
+          z-index: 30;
+          background: rgba(0, 0, 0, 0.45);
+          display: block;
+          opacity: 0;
+          pointer-events: none;
+          transition: opacity var(--transition);
+        }
+
+        .sidebar-backdrop.visible {
+          opacity: 1;
+          pointer-events: auto;
+        }
+
+        .editor-panel {
+          min-height: 520px;
+        }
+
+        .results-panel {
+          min-height: 360px;
+          border-left: none;
+          border-top: 1px solid var(--border);
+        }
+      }
+
+      @media (max-width: 720px) {
+        .app {
+          grid-template-rows: auto minmax(520px, 62vh) minmax(360px, 38vh);
+        }
+
+        header {
+          min-height: 56px;
+          flex-wrap: wrap;
+          gap: 10px;
+          padding: 10px 12px;
+        }
+
+        .logo {
+          flex: 1;
+          min-width: 0;
+        }
+
+        .header-center {
+          order: 3;
+          width: 100%;
+          justify-content: space-between;
+        }
+
+        .run-btn {
+          margin-left: 0;
+          padding: 8px 14px;
+        }
+
+        .sidebar,
+        .sidebar-backdrop {
+          top: 104px;
+          inset-block-start: 104px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Loading overlay -->
+    <div id="loading-overlay">
+      <div class="loader-ring"></div>
+      <div class="loader-text">Loading problems…</div>
     </div>
 
-    <div class="header-center">
-      <button class="nav-btn" id="prev-btn" disabled>
-        ← Prev
-      </button>
-      <div class="problem-badge">
-        Problem <span id="current-num">1</span> / <span id="total-num">40</span>
-      </div>
-      <button class="nav-btn" id="next-btn">
-        Next →
-      </button>
+    <div class="app">
+      <!-- ── Header ─────────────────────────────────────────────────── -->
+      <header>
+        <button
+          class="problems-menu-btn"
+          id="problems-menu-btn"
+          type="button"
+          aria-label="Open problems menu"
+          aria-controls="problems-sidebar"
+          aria-expanded="false"
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+
+        <div class="logo">
+          <div class="logo-icon">🔁</div>
+          Practice Recursion
+        </div>
+
+        <div class="header-center">
+          <button class="nav-btn" id="prev-btn" disabled>← Prev</button>
+          <div class="problem-badge">
+            Problem <span id="current-num">1</span> /
+            <span id="total-num">40</span>
+          </div>
+          <button class="nav-btn" id="next-btn">Next →</button>
+        </div>
+
+        <button class="run-btn" id="run-btn">
+          <div class="spinner"></div>
+          <span class="run-label">▶ Run Tests</span>
+        </button>
+      </header>
+
+      <!-- ── Sidebar ─────────────────────────────────────────────────── -->
+      <aside class="sidebar" id="problems-sidebar">
+        <div class="sidebar-header">All Problems</div>
+        <div class="sidebar-search">
+          <input type="text" id="search-input" placeholder="Search problems…" />
+        </div>
+        <div class="sidebar-list" id="sidebar-list"></div>
+      </aside>
+      <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+      <!-- ── Editor ─────────────────────────────────────────────────── -->
+      <main class="editor-panel">
+        <div class="problem-header">
+          <div class="problem-title" id="problem-title">Loading…</div>
+          <div class="problem-meta">
+            <span class="meta-tag">Recursion</span>
+            <span class="meta-tag" id="problem-part-tag">Part 1</span>
+          </div>
+        </div>
+
+        <div class="editor-toolbar">
+          <span class="toolbar-label">Solution</span>
+          <button class="reset-btn" id="reset-btn">↺ Reset to stub</button>
+        </div>
+
+        <div class="editor-wrapper">
+          <div id="code-editor"></div>
+        </div>
+      </main>
+
+      <!-- ── Results ─────────────────────────────────────────────────── -->
+      <aside class="results-panel">
+        <div class="results-header">
+          <div class="results-title">Test Results</div>
+          <div class="progress-bar-wrap">
+            <div class="progress-bar" id="progress-bar"></div>
+          </div>
+          <div class="stats-row">
+            <div class="stat">
+              Pass: <span class="pass-count" id="stat-pass">–</span>
+            </div>
+            <div class="stat">
+              Fail: <span class="fail-count" id="stat-fail">–</span>
+            </div>
+            <div class="stat">
+              Total: <span class="total-count" id="stat-total">–</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="results-body" id="results-body">
+          <div class="idle-state">
+            <div class="idle-icon">🧪</div>
+            <div>
+              Write your solution and click<br /><strong>▶ Run Tests</strong> to
+              see results.
+            </div>
+          </div>
+        </div>
+      </aside>
     </div>
 
-    <button class="run-btn" id="run-btn">
-      <div class="spinner"></div>
-      <span class="run-label">▶ Run Tests</span>
-    </button>
-  </header>
+    <!-- Hidden iframe for sandboxed test execution -->
+    <iframe id="test-frame" sandbox="allow-scripts allow-same-origin"></iframe>
 
-  <!-- ── Sidebar ─────────────────────────────────────────────────── -->
-  <aside class="sidebar">
-    <div class="sidebar-header">All Problems</div>
-    <div class="sidebar-search">
-      <input type="text" id="search-input" placeholder="Search problems…" />
-    </div>
-    <div class="sidebar-list" id="sidebar-list"></div>
-  </aside>
-
-  <!-- ── Editor ─────────────────────────────────────────────────── -->
-  <main class="editor-panel">
-    <div class="problem-header">
-      <div class="problem-title" id="problem-title">Loading…</div>
-      <div class="problem-meta">
-        <span class="meta-tag">Recursion</span>
-        <span class="meta-tag" id="problem-part-tag">Part 1</span>
-      </div>
-    </div>
-
-    <div class="editor-toolbar">
-      <span class="toolbar-label">Solution</span>
-      <button class="reset-btn" id="reset-btn">↺ Reset to stub</button>
-    </div>
-
-    <div class="editor-wrapper">
-      <div id="code-editor"></div>
-    </div>
-  </main>
-
-  <!-- ── Results ─────────────────────────────────────────────────── -->
-  <aside class="results-panel">
-    <div class="results-header">
-      <div class="results-title">Test Results</div>
-      <div class="progress-bar-wrap">
-        <div class="progress-bar" id="progress-bar"></div>
-      </div>
-      <div class="stats-row">
-        <div class="stat">Pass: <span class="pass-count" id="stat-pass">–</span></div>
-        <div class="stat">Fail: <span class="fail-count" id="stat-fail">–</span></div>
-        <div class="stat">Total: <span class="total-count" id="stat-total">–</span></div>
-      </div>
-    </div>
-
-    <div class="results-body" id="results-body">
-      <div class="idle-state">
-        <div class="idle-icon">🧪</div>
-        <div>Write your solution and click<br/><strong>▶ Run Tests</strong> to see results.</div>
-      </div>
-    </div>
-  </aside>
-
-</div>
-
-<!-- Hidden iframe for sandboxed test execution -->
-<iframe id="test-frame" sandbox="allow-scripts allow-same-origin"></iframe>
-
-<script type="module" src="/src/main.js"></script>
-</body>
+    <script type="module" src="/src/main.js"></script>
+  </body>
 </html>

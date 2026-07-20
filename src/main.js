@@ -22,8 +22,11 @@ const controller = new AppController({
     totalNum: document.getElementById('total-num'),
   }),
   sidebarView: new SidebarView({
+    sidebar: document.getElementById('problems-sidebar'),
     sidebarList: document.getElementById('sidebar-list'),
     searchInput: document.getElementById('search-input'),
+    menuBtn: document.getElementById('problems-menu-btn'),
+    backdrop: document.getElementById('sidebar-backdrop'),
   }),
   editorView: new EditorView({
     problemTitle: document.getElementById('problem-title'),

@@ -1,8 +1,13 @@
 export class SidebarView {
-  constructor({ sidebarList, searchInput }) {
+  constructor({ sidebar, sidebarList, searchInput, menuBtn, backdrop }) {
+    this.sidebar = sidebar;
     this.sidebarList = sidebarList;
     this.searchInput = searchInput;
+    this.menuBtn = menuBtn;
+    this.backdrop = backdrop;
     this.selectHandler = null;
+
+    this.bindMenu();
   }
 
   render({ manifest, currentProblemNumber, resultCache, filter }) {
@@ -38,6 +43,8 @@ export class SidebarView {
         if (this.selectHandler) {
           this.selectHandler(problem.num);
         }
+
+        this.closeMenu();
       });
 
       this.sidebarList.appendChild(item);
@@ -59,5 +66,33 @@ export class SidebarView {
 
   getFilter() {
     return this.searchInput.value;
+  }
+
+  bindMenu() {
+    this.menuBtn.addEventListener('click', () => {
+      this.toggleMenu();
+    });
+
+    this.backdrop.addEventListener('click', () => {
+      this.closeMenu();
+    });
+
+    window.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        this.closeMenu();
+      }
+    });
+  }
+
+  toggleMenu() {
+    const isOpen = this.sidebar.classList.toggle('open');
+    this.backdrop.classList.toggle('visible', isOpen);
+    this.menuBtn.setAttribute('aria-expanded', String(isOpen));
+  }
+
+  closeMenu() {
+    this.sidebar.classList.remove('open');
+    this.backdrop.classList.remove('visible');
+    this.menuBtn.setAttribute('aria-expanded', 'false');
   }
 }
