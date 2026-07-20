@@ -11,14 +11,4 @@
 //   e: {e: {e: 2}, ee: 'car'}
 // };
 // nestedEvenSum(obj1); // 10
-var nestedEvenSum = function (obj) {
-  let currentSum = 0;
-  for (let item of Object.keys(obj)) {
-    if (Number.isInteger(obj[item])) {
-      if (obj[item] % 2 == 0) currentSum += obj[item];
-    } else if (typeof obj[item] == "object") {
-      currentSum += nestedEvenSum(obj[item]);
-    }
-  }
-  return currentSum;
-};
+var nestedEvenSum = function (obj) {};

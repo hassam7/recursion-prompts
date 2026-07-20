@@ -5,7 +5,4 @@
 // 18. Create a new array with a given value and length.
 // buildList(0,5) // [0,0,0,0,0]
 // buildList(7,3) // [7,7,7]
-var buildList = function (value, length) {
-  if (length === 1) return [value];
-  else return [value, ...buildList(value, length - 1)];
-};
+var buildList = function (value, length) {};

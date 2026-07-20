@@ -6,16 +6,4 @@
 // var obj = {'e':{'x':'y'},'t':{'r':{'e':'r'},'p':{'y':'r'}},'y':'e'};
 // countValuesInObj(obj, 'r') // 2
 // countValuesInObj(obj, 'e') // 1
-var countValuesInObj = function (obj, value) {
-  let count = 0;
-  for (let item of Object.keys(obj)) {
-    if (typeof obj[item] === "object") {
-      count += countValuesInObj(obj[item], value);
-    } else {
-      if (obj[item] === value) {
-        count++;
-      }
-    }
-  }
-  return count;
-};
+var countValuesInObj = function (obj, value) {};
