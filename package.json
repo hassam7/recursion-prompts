@@ -1,0 +1,7 @@
+{
+  "name": "recursion-prompts",
+  "private": true,
+  "scripts": {
+    "dev": "node server.js"
+  }
+}
