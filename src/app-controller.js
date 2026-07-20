@@ -91,12 +91,14 @@ export class AppController {
 
   async init() {
     this.bindEvents();
+    this.editorView.init().catch((error) => {
+      console.error(error);
+    });
 
     try {
       const [manifest, libCache] = await Promise.all([
         this.problemService.loadManifest(),
         this.problemService.prefetchLibs(),
-        this.editorView.init(),
       ]);
 
       this.store.setManifest(manifest);

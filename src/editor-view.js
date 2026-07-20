@@ -14,12 +14,14 @@ export class EditorView {
     this.codeEditor = codeEditor;
     this.resetBtn = resetBtn;
     this.editor = null;
+    this.pendingCode = '';
     this.runShortcutHandler = null;
   }
 
   async init() {
     await loadAce();
     this.editor = this.createEditor(this.codeEditor);
+    this.setCode(this.pendingCode);
 
     if (this.runShortcutHandler) {
       this.addRunShortcut(this.runShortcutHandler);
@@ -33,11 +35,21 @@ export class EditorView {
   }
 
   getCode() {
+    if (!this.editor) {
+      return this.pendingCode;
+    }
+
     return this.editor.getValue();
   }
 
   setCode(code) {
-    this.editor.setValue(code || '', -1);
+    this.pendingCode = code || '';
+
+    if (!this.editor) {
+      return;
+    }
+
+    this.editor.setValue(this.pendingCode, -1);
     this.editor.focus();
   }
 
