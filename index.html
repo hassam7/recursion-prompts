@@ -8,6 +8,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-K2PDEJP5B5"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-K2PDEJP5B5');
+  </script>
 
   <style>
     /* ── Reset & Tokens ─────────────────────────────────────────── */
@@ -633,6 +640,7 @@
   let libCache   = {};       // url → file text (pre-fetched libs)
   let resultCache= {};       // problemNum → {pass,fail} (last run)
   let running    = false;
+  let searchTracked = false;
 
   // ── DOM refs ──────────────────────────────────────────────────────
   const overlay      = document.getElementById('loading-overlay');
@@ -659,6 +667,11 @@
     const res = await fetch(url);
     if (!res.ok) throw new Error(`Failed to fetch ${url}: ${res.status}`);
     return res.text();
+  }
+
+  function trackEvent(name, params = {}) {
+    if (typeof window.gtag !== 'function') return;
+    window.gtag('event', name, params);
   }
 
   // ── Pre-fetch all lib scripts once ────────────────────────────────
@@ -715,6 +728,12 @@
     currentNum.textContent  = n;
     problemTitle.textContent = `${n}. ${p.title}`;
     partTag.textContent     = p.num <= 36 ? 'Part 1' : 'Part 2';
+
+    trackEvent('problem_opened', {
+      problem_num: p.num,
+      problem_slug: p.slug,
+      problem_title: p.title,
+    });
 
     // Update nav buttons
     prevBtn.disabled = (idx === 0);
@@ -879,6 +898,12 @@
     const code = codeEditor.value;
     userCode[p.num] = code;
 
+    trackEvent('run_tests_clicked', {
+      problem_num: p.num,
+      problem_slug: p.slug,
+      problem_title: p.title,
+    });
+
     // Load spec for this problem
     let specCode;
     try {
@@ -929,6 +954,24 @@
       resultCache[p.num] = data;
       renderResults(data);
 
+      trackEvent('tests_completed', {
+        problem_num: p.num,
+        problem_slug: p.slug,
+        problem_title: p.title,
+        tests_passed: data.stats.passes,
+        tests_failed: data.stats.failures,
+        tests_total: data.stats.passes + data.stats.failures,
+      });
+
+      if (data.stats.failures === 0) {
+        trackEvent('problem_passed', {
+          problem_num: p.num,
+          problem_slug: p.slug,
+          problem_title: p.title,
+          tests_total: data.stats.passes + data.stats.failures,
+        });
+      }
+
       // Update sidebar dot
       buildSidebar(searchInput.value);
 
@@ -942,6 +985,11 @@
       window.removeEventListener('message', handler);
       running = false;
       runBtn.classList.remove('loading');
+      trackEvent('tests_timed_out', {
+        problem_num: p.num,
+        problem_slug: p.slug,
+        problem_title: p.title,
+      });
       resultsBody.innerHTML = `<div class="idle-state" style="color:var(--fail)">⚠️ Test run timed out.<br/>Check your code for infinite loops.</div>`;
     }, 10000);
 
@@ -992,9 +1040,18 @@
     const p = manifest[currentIdx];
     codeEditor.value = stubCache[p.num] || '';
     userCode[p.num] = undefined;
+    trackEvent('reset_clicked', {
+      problem_num: p.num,
+      problem_slug: p.slug,
+      problem_title: p.title,
+    });
   });
 
   searchInput.addEventListener('input', () => {
+    if (!searchTracked && searchInput.value.trim().length > 0) {
+      searchTracked = true;
+      trackEvent('search_used');
+    }
     buildSidebar(searchInput.value);
   });
 
