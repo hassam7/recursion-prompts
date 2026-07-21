@@ -1,7 +1,7 @@
 # Recursion Prompts
 
 ### What is this?
-An interactive browser-based playground for practising recursion in JavaScript. There are **40 challenges** — each one has a problem prompt, a starter stub, and a full test suite. Write your solution in the editor, click **Run Tests**, and see pass/fail results in real time.
+An interactive browser-based playground for practising recursion in JavaScript. There are **50 challenges** — each one has a problem prompt, a starter stub, and a full test suite. Write your solution in the editor, click **Run Tests**, and see pass/fail results in real time.
 
 ---
 
@@ -24,7 +24,7 @@ node server.js
 ### How to use the Playground
 
 1. Open **http://localhost:3000** in your browser.
-2. Browse all 40 problems in the left sidebar (or use the search bar).
+2. Browse all 50 problems in the left sidebar (or use the search bar).
 3. Use **← Prev** / **Next →** buttons (or the sidebar) to jump between problems.
 4. Read the prompt at the top of the editor panel.
 5. Write (or modify) your recursive solution in the code editor.
@@ -75,7 +75,7 @@ recursion-prompts/
 │   ├── 01-factorial/
 │   │   ├── problem.js      ← Starter stub shown in the editor
 │   │   └── spec.js         ← Isolated test suite for this problem
-│   └── ...                 ← 40 folders total
+│   └── ...                 ← 50 folders total
 ├── src/
 │   ├── main.js             ← Composition root; wires services, state, and views
 │   ├── app-controller.js   ← Coordinates app startup, navigation, reset, and tests

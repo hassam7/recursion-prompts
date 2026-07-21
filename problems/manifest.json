@@ -238,5 +238,65 @@
     "slug": "clone",
     "title": "Clone",
     "dir": "40-clone"
+  },
+  {
+    "num": 41,
+    "slug": "array-depth",
+    "title": "Nested Array Depth",
+    "dir": "41-array-depth"
+  },
+  {
+    "num": 42,
+    "slug": "deep-includes",
+    "title": "Deep Includes",
+    "dir": "42-deep-includes"
+  },
+  {
+    "num": 43,
+    "slug": "count-nested-arrays",
+    "title": "Count Nested Arrays",
+    "dir": "43-count-nested-arrays"
+  },
+  {
+    "num": 44,
+    "slug": "get-by-path",
+    "title": "Object Path Lookup",
+    "dir": "44-get-by-path"
+  },
+  {
+    "num": 45,
+    "slug": "deep-freeze",
+    "title": "Deep Freeze",
+    "dir": "45-deep-freeze"
+  },
+  {
+    "num": 46,
+    "slug": "tree-sum",
+    "title": "Tree Sum",
+    "dir": "46-tree-sum"
+  },
+  {
+    "num": 47,
+    "slug": "tree-includes",
+    "title": "Find In Tree",
+    "dir": "47-tree-includes"
+  },
+  {
+    "num": 48,
+    "slug": "subsets",
+    "title": "Subsets",
+    "dir": "48-subsets"
+  },
+  {
+    "num": 49,
+    "slug": "permutations",
+    "title": "String Permutations",
+    "dir": "49-permutations"
+  },
+  {
+    "num": 50,
+    "slug": "generate-parentheses",
+    "title": "Generate Parentheses",
+    "dir": "50-generate-parentheses"
   }
 ]
