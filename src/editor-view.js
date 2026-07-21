@@ -7,12 +7,16 @@ const ACE_SCRIPTS = [
 
 let aceLoadPromise;
 
+const GITHUB_REPO_URL = 'https://github.com/hassam7/recursion-prompts';
+const GITHUB_DEFAULT_BRANCH = 'master';
+
 export class EditorView {
-  constructor({ problemTitle, partTag, codeEditor, resetBtn }) {
+  constructor({ problemTitle, partTag, codeEditor, resetBtn, githubEditBtn }) {
     this.problemTitle = problemTitle;
     this.partTag = partTag;
     this.codeEditor = codeEditor;
     this.resetBtn = resetBtn;
+    this.githubEditBtn = githubEditBtn;
     this.editor = null;
     this.pendingCode = '';
     this.fallbackEditor = this.createFallbackEditor(codeEditor);
@@ -34,7 +38,16 @@ export class EditorView {
   renderProblem(problem, code) {
     this.problemTitle.textContent = `${problem.num}. ${problem.title}`;
     this.partTag.textContent = problem.num <= 36 ? 'Part 1' : 'Part 2';
+    this.updateGithubEditLink(problem);
     this.setCode(code);
+  }
+
+  updateGithubEditLink(problem) {
+    if (!this.githubEditBtn) {
+      return;
+    }
+
+    this.githubEditBtn.href = `${GITHUB_REPO_URL}/tree/${GITHUB_DEFAULT_BRANCH}/problems/${problem.dir}`;
   }
 
   getCode() {

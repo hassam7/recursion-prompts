@@ -33,6 +33,7 @@ const controller = new AppController({
     partTag: document.getElementById('problem-part-tag'),
     codeEditor: document.getElementById('code-editor'),
     resetBtn: document.getElementById('reset-btn'),
+    githubEditBtn: document.getElementById('github-edit-btn'),
   }),
   resultsView: new ResultsView({
     resultsBody: document.getElementById('results-body'),
