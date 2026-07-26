@@ -1,3 +1,5 @@
+import { AnalyticsEvent } from './analytics.js';
+
 export class AppController {
   constructor({
     store,
@@ -58,7 +60,7 @@ export class AppController {
 
       if (!this.store.hasTrackedSearch() && filter.trim().length > 0) {
         this.store.markSearchTracked();
-        this.analytics.track('search_used');
+        this.analytics.track(AnalyticsEvent.SEARCH_USED);
       }
 
       this.renderSidebar();
@@ -72,7 +74,7 @@ export class AppController {
 
       this.editorView.setCode(this.store.getStub(currentProblem.num));
       this.store.clearUserCode(currentProblem.num);
-      this.analytics.track('reset_clicked', this.problemParams(currentProblem));
+      this.analytics.track(AnalyticsEvent.RESET_CLICKED, this.problemParams(currentProblem));
     });
 
     this.editorView.bindRunShortcut(() => {
@@ -160,7 +162,7 @@ export class AppController {
       this.resultsView.renderIdle();
     }
 
-    this.analytics.track('problem_opened', this.problemParams(currentProblem));
+    this.analytics.track(AnalyticsEvent.PROBLEM_OPENED, this.problemParams(currentProblem));
   }
 
   async runTests() {
@@ -174,7 +176,7 @@ export class AppController {
 
     const code = this.editorView.getCode();
     this.store.setUserCode(currentProblem.num, code);
-    this.analytics.track('run_tests_clicked', this.problemParams(currentProblem));
+    this.analytics.track(AnalyticsEvent.RUN_TESTS_CLICKED, this.problemParams(currentProblem));
 
     try {
       const [specCode, mochaCss] = await Promise.all([
@@ -192,7 +194,7 @@ export class AppController {
       this.store.setResult(currentProblem.num, result);
       this.resultsView.renderResults(result);
       this.renderSidebar();
-      this.analytics.track('tests_completed', {
+      this.analytics.track(AnalyticsEvent.TESTS_COMPLETED, {
         ...this.problemParams(currentProblem),
         tests_passed: result.stats.passes,
         tests_failed: result.stats.failures,
@@ -200,7 +202,7 @@ export class AppController {
       });
 
       if (result.stats.failures === 0) {
-        this.analytics.track('problem_passed', {
+        this.analytics.track(AnalyticsEvent.PROBLEM_PASSED, {
           ...this.problemParams(currentProblem),
           tests_total: result.stats.passes + result.stats.failures,
         });
@@ -208,7 +210,7 @@ export class AppController {
     } catch (error) {
       if (error.message === 'Test run timed out.') {
         this.resultsView.renderTimeout();
-        this.analytics.track('tests_timed_out', this.problemParams(currentProblem));
+        this.analytics.track(AnalyticsEvent.TESTS_TIMED_OUT, this.problemParams(currentProblem));
       } else {
         window.alert(`Could not run tests: ${error.message}`);
       }
