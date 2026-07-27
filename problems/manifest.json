@@ -298,5 +298,11 @@
     "slug": "generate-parentheses",
     "title": "Generate Parentheses",
     "dir": "50-generate-parentheses"
+  },
+  {
+    "num": 52,
+    "slug": "can-make-playlist",
+    "title": "Can Make Playlist",
+    "dir": "52-can-make-playlist"
   }
 ]
