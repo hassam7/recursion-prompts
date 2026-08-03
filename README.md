@@ -157,6 +157,55 @@ Astro reads the source `problems/` folder at build time to generate static probl
 
 If you change a challenge, edit only `problems/`. The `public/problems/` copy is generated and ignored by git.
 
+#### Adding a New Problem
+
+1. Create the next numbered folder under `problems/` using the existing naming pattern:
+
+```text
+problems/53-new-problem-slug/
+├── problem.js
+└── spec.js
+```
+
+2. Add the starter prompt and function stub to `problem.js`. Keep the prompt in leading comments so Astro can extract it for the static SEO page.
+
+3. Add the Mocha/Chai test suite to `spec.js`. Keep the test file browser-compatible because it runs inside the sandboxed iframe with the static libraries from `public/lib/`.
+
+4. Add a matching entry to `problems/manifest.json`:
+
+```json
+{
+  "num": 53,
+  "slug": "new-problem-slug",
+  "title": "New Problem Title",
+  "dir": "53-new-problem-slug"
+}
+```
+
+5. Run the sync script if you want to test the new problem without starting Astro through npm scripts:
+
+```bash
+npm run sync:problems
+```
+
+`npm run dev` and `npm run build` run this sync automatically through `predev` and `prebuild`.
+
+6. Validate the new challenge:
+
+```bash
+npm run build
+```
+
+Then check these routes locally with `npm run preview`:
+
+```text
+/problems/new-problem-slug/
+/playground/?problem=53
+/sitemap.xml
+```
+
+7. Commit the source files in `problems/`, the manifest change, and any docs updates. Do not commit `public/problems/`; it is generated.
+
 ---
 
 ### CSS Architecture
