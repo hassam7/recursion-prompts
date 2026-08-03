@@ -84,7 +84,7 @@ recursion-prompts/
 ├── src/
 │   ├── components/playground/  React playground components and CSS modules
 │   ├── layouts/BaseLayout.astro
-│   ├── lib/problem-content.js  Build-time problem metadata and prompt helpers
+│   ├── lib/problem-content.js  Build-time problem metadata and description helpers
 │   ├── pages/index.astro       SEO-friendly homepage
 │   ├── pages/playground.astro  React playground route
 │   ├── pages/problems/[slug].astro
@@ -145,7 +145,27 @@ The iframe still receives Mocha CSS from `public/lib/css/mocha.css`. Keep those 
 
 #### Problem Data
 
-The editable challenge source lives in `problems/`. Before Astro dev/build runs, `npm run sync:problems` copies that folder to `public/problems/` so the browser can fetch runtime data from stable static URLs:
+The editable challenge source lives in `problems/`. Each challenge owns its metadata, description, starter stub, and tests inside its numbered folder:
+
+```text
+problems/01-factorial/
+├── meta.json
+├── description.html
+├── problem.js
+└── spec.js
+```
+
+`meta.json` contains human-readable metadata:
+
+```json
+{
+  "title": "Factorial"
+}
+```
+
+`description.html` contains the crawlable prompt content used by static problem pages. `problem.js` should contain only the starter code, not the prompt description.
+
+Before Astro dev/build runs, `npm run sync:problems` copies `problems/` to `public/problems/` and generates `public/problems/manifest.json` from the problem folders. The browser can then fetch runtime data from stable static URLs:
 
 ```text
 /problems/manifest.json
@@ -153,9 +173,18 @@ The editable challenge source lives in `problems/`. Before Astro dev/build runs,
 /problems/01-factorial/spec.js
 ```
 
-Astro reads the source `problems/` folder at build time to generate static problem pages and the sitemap.
+Astro also reads the source `problems/` folder at build time to generate static problem pages and the sitemap. The generated manifest is derived from folder names and each folder's `meta.json`:
 
-If you change a challenge, edit only `problems/`. The `public/problems/` copy is generated and ignored by git.
+```json
+{
+  "num": 1,
+  "slug": "factorial",
+  "title": "Factorial",
+  "dir": "01-factorial"
+}
+```
+
+If you change a challenge, edit only `problems/`. The `public/problems/` copy, including its generated manifest, is ignored by git.
 
 #### Adding a New Problem
 
@@ -163,26 +192,27 @@ If you change a challenge, edit only `problems/`. The `public/problems/` copy is
 
 ```text
 problems/53-new-problem-slug/
+├── meta.json
+├── description.html
 ├── problem.js
 └── spec.js
 ```
 
-2. Add the starter prompt and function stub to `problem.js`. Keep the prompt in leading comments so Astro can extract it for the static SEO page.
-
-3. Add the Mocha/Chai test suite to `spec.js`. Keep the test file browser-compatible because it runs inside the sandboxed iframe with the static libraries from `public/lib/`.
-
-4. Add a matching entry to `problems/manifest.json`:
+2. Add the human-readable title to `meta.json`:
 
 ```json
 {
-  "num": 53,
-  "slug": "new-problem-slug",
-  "title": "New Problem Title",
-  "dir": "53-new-problem-slug"
+  "title": "New Problem Title"
 }
 ```
 
-5. Run the sync script if you want to test the new problem without starting Astro through npm scripts:
+3. Add the prompt content to `description.html`. Use regular HTML such as paragraphs, lists, and inline `code` elements.
+
+4. Add only the starter function stub to `problem.js`.
+
+5. Add the Mocha/Chai test suite to `spec.js`. Keep the test file browser-compatible because it runs inside the sandboxed iframe with the static libraries from `public/lib/`.
+
+6. Run the sync script if you want to test the new problem without starting Astro through npm scripts:
 
 ```bash
 npm run sync:problems
@@ -190,7 +220,7 @@ npm run sync:problems
 
 `npm run dev` and `npm run build` run this sync automatically through `predev` and `prebuild`.
 
-6. Validate the new challenge:
+7. Validate the new challenge:
 
 ```bash
 npm run build
@@ -204,7 +234,7 @@ Then check these routes locally with `npm run preview`:
 /sitemap.xml
 ```
 
-7. Commit the source files in `problems/`, the manifest change, and any docs updates. Do not commit `public/problems/`; it is generated.
+8. Commit the source files in `problems/` and any docs updates. Do not commit `public/problems/`; it is generated.
 
 ---
 

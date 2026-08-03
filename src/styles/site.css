@@ -187,16 +187,25 @@ p {
   min-width: 0;
 }
 
-.prompt-block {
+.problem-description {
   overflow: auto;
   margin: 24px 0;
+  max-width: 760px;
   padding: 20px;
   border-radius: var(--site-radius);
   background: var(--site-code-bg);
   color: var(--site-code-text);
-  font-size: 0.92rem;
+  font-size: 0.96rem;
   line-height: 1.7;
-  white-space: pre-wrap;
+}
+
+.problem-description p {
+  margin: 0 0 1rem;
+  color: inherit;
+}
+
+.problem-description p:last-child {
+  margin-bottom: 0;
 }
 
 .side-panel {

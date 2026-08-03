@@ -4,57 +4,77 @@ import path from 'node:path';
 const ROOT = process.cwd();
 const PROBLEMS_DIR = path.join(ROOT, 'problems');
 
+/**
+ * @typedef {object} Problem
+ * @property {number} num
+ * @property {string} slug
+ * @property {string} title
+ * @property {string} dir
+ */
+
+/** @returns {Promise<Problem[]>} */
 export async function getProblems() {
-  const manifestPath = path.join(PROBLEMS_DIR, 'manifest.json');
-  const manifest = JSON.parse(await fs.readFile(manifestPath, 'utf8'));
-  return manifest;
+  const entries = await fs.readdir(PROBLEMS_DIR, { withFileTypes: true });
+  const problemDirs = entries
+    .filter((entry) => entry.isDirectory() && /^\d+-/.test(entry.name))
+    .map((entry) => entry.name)
+    .sort((first, second) => getProblemNumber(first) - getProblemNumber(second));
+
+  return Promise.all(problemDirs.map(async (dir) => {
+    const metaPath = path.join(PROBLEMS_DIR, dir, 'meta.json');
+    const meta = JSON.parse(await fs.readFile(metaPath, 'utf8'));
+
+    return {
+      num: getProblemNumber(dir),
+      slug: getProblemSlug(dir),
+      title: meta.title,
+      dir,
+    };
+  }));
 }
 
+/**
+ * @param {string} slug
+ * @returns {Promise<Problem | null>}
+ */
 export async function getProblemBySlug(slug) {
   const problems = await getProblems();
   return problems.find((problem) => problem.slug === slug) || null;
 }
 
-export async function getProblemPrompt(problem) {
-  const problemPath = path.join(PROBLEMS_DIR, problem.dir, 'problem.js');
-  const source = await fs.readFile(problemPath, 'utf8');
-  return extractPrompt(source);
+/** @param {Problem} problem */
+export async function getProblemDescriptionHtml(problem) {
+  const descriptionPath = path.join(PROBLEMS_DIR, problem.dir, 'description.html');
+  return fs.readFile(descriptionPath, 'utf8');
 }
 
-export function extractPrompt(source) {
-  const lines = source.split('\n');
-  const promptLines = [];
-
-  for (const line of lines) {
-    if (/^\s*(var|let|const|function)\s+/.test(line)) {
-      break;
-    }
-
-    const cleaned = line
-      .replace(/^\s*\/\*+\s?/, '')
-      .replace(/\s?\*\/\s*$/, '')
-      .replace(/^\s*\/\/\s?/, '')
-      .trimEnd();
-
-    if (/^jshint\b/.test(cleaned)) {
-      continue;
-    }
-
-    promptLines.push(cleaned);
-  }
-
-  return promptLines
-    .join('\n')
-    .replace(/Solve the following prompt using recursion\.\s*/i, '')
-    .replace(/\n{3,}/g, '\n\n')
-    .trim();
-}
-
-export function getProblemDescription(problem) {
-  return `Practice the ${problem.title} recursion challenge in JavaScript with a prompt, starter code, and browser-based tests.`;
+/** @param {Problem} problem */
+export async function getProblemDescription(problem) {
+  const descriptionHtml = await getProblemDescriptionHtml(problem);
+  const text = htmlToText(descriptionHtml);
+  return text || `Practice the ${problem.title} recursion challenge in JavaScript with starter code and browser-based tests.`;
 }
 
 export function siteUrl(pathname = '/') {
   const baseUrl = 'https://recursion.hassamali.com';
   return new URL(pathname, baseUrl).toString();
+}
+
+function getProblemNumber(dir) {
+  return Number.parseInt(dir.split('-')[0], 10);
+}
+
+function getProblemSlug(dir) {
+  return dir.replace(/^\d+-/, '');
+}
+
+function htmlToText(html) {
+  return html
+    .replace(/<br\s*\/?\s*>/gi, ' ')
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&amp;/g, '&')
+    .replace(/\s+/g, ' ')
+    .trim();
 }

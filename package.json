@@ -1,6 +1,7 @@
 {
   "name": "recursion-prompts",
   "private": true,
+  "type": "module",
   "scripts": {
     "sync:problems": "node scripts/sync-public-problems.mjs",
     "predev": "npm run sync:problems",

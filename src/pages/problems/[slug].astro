@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getProblemDescription, getProblemPrompt, getProblems, siteUrl } from '../../lib/problem-content.js';
+import { getProblemDescription, getProblemDescriptionHtml, getProblems, siteUrl } from '../../lib/problem-content.js';
 
 export async function getStaticPaths() {
   const problems = await getProblems();
@@ -11,14 +11,14 @@ export async function getStaticPaths() {
       problem,
       previousProblem: problems[index - 1] || null,
       nextProblem: problems[index + 1] || null,
-      prompt: await getProblemPrompt(problem),
+      description: await getProblemDescription(problem),
+      descriptionHtml: await getProblemDescriptionHtml(problem),
     },
   })));
 }
 
-const { problem, previousProblem, nextProblem, prompt } = Astro.props;
+const { problem, previousProblem, nextProblem, description, descriptionHtml } = Astro.props;
 const title = `${problem.title} Recursion Challenge - Recursion Prompts`;
-const description = getProblemDescription(problem);
 const canonicalPath = `/problems/${problem.slug}/`;
 const structuredData = {
   '@context': 'https://schema.org',
@@ -50,10 +50,7 @@ const structuredData = {
       <article class="problem-article">
         <div class="eyebrow">Problem {problem.num}</div>
         <h1>{problem.title} Recursion Challenge</h1>
-        <p>{description}</p>
-
-        <h2>Prompt</h2>
-        <pre class="prompt-block"><code>{prompt}</code></pre>
+        <div class="problem-description" set:html={descriptionHtml} />
 
         <div class="action-row">
           <a class="button-link" href={`/playground/?problem=${problem.num}`}>Open in interactive editor</a>
