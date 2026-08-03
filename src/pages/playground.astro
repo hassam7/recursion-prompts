@@ -1,0 +1,11 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PlaygroundApp from '../components/playground/PlaygroundApp.jsx';
+
+const title = 'Interactive JavaScript Recursion Playground - Recursion Prompts';
+const description = 'Write recursive JavaScript solutions in the browser and run the included tests instantly.';
+---
+
+<BaseLayout title={title} description={description} canonicalPath="/playground/">
+  <PlaygroundApp client:load />
+</BaseLayout>

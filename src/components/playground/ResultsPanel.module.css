@@ -1,0 +1,135 @@
+.resultsPanel {
+  display: flex;
+  grid-area: results;
+  min-width: 0;
+  min-height: 0;
+  flex-direction: column;
+  border-left: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.resultsHeader {
+  padding: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.resultsTitle {
+  margin-bottom: 12px;
+  font-weight: 800;
+}
+
+.progressBarWrap {
+  height: 6px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--surface2);
+}
+
+.progressBar {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--accent), var(--pass));
+  transition: width 0.2s ease;
+}
+
+.statsRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 12px;
+  color: var(--text2);
+  font-size: 0.82rem;
+}
+
+.passCount {
+  color: var(--pass);
+  font-weight: 800;
+}
+
+.failCount {
+  color: var(--fail);
+  font-weight: 800;
+}
+
+.resultsBody {
+  overflow: auto;
+  min-height: 0;
+  padding: 14px;
+}
+
+.idleState,
+.summaryBox,
+.testItem {
+  border: 1px solid var(--border);
+  border-radius: var(--radiusSm);
+  background: var(--surface2);
+}
+
+.idleState {
+  padding: 20px;
+  color: var(--text2);
+  line-height: 1.6;
+  text-align: center;
+}
+
+.summaryBox {
+  margin-bottom: 12px;
+  padding: 14px;
+  font-weight: 800;
+}
+
+.allPass {
+  border-color: rgba(52, 211, 153, 0.22);
+  background: var(--passBg);
+  color: var(--pass);
+}
+
+.hasFail {
+  border-color: rgba(248, 113, 113, 0.22);
+  background: var(--failBg);
+  color: var(--fail);
+}
+
+.testItem {
+  display: grid;
+  grid-template-columns: 46px 1fr;
+  gap: 10px;
+  margin-top: 10px;
+  padding: 12px;
+}
+
+.testItem.pass {
+  border-color: rgba(52, 211, 153, 0.18);
+}
+
+.testItem.fail {
+  border-color: rgba(248, 113, 113, 0.2);
+}
+
+.testIcon {
+  color: var(--text2);
+  font-size: 0.74rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.testTitle {
+  color: var(--text);
+  line-height: 1.35;
+}
+
+.testError {
+  margin-top: 8px;
+  color: var(--fail);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.78rem;
+  line-height: 1.45;
+  white-space: pre-wrap;
+}
+
+@media (max-width: 1100px) {
+  .resultsPanel {
+    border-top: 1px solid var(--border);
+    border-left: 0;
+  }
+}
