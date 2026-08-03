@@ -3,7 +3,7 @@ import styles from './EditorPanel.module.css';
 const GITHUB_REPO_URL = 'https://github.com/hassam7/recursion-prompts';
 const GITHUB_DEFAULT_BRANCH = 'master';
 
-export function EditorPanel({ problem, code, onCodeChange, onReset, onRunShortcut }) {
+export function EditorPanel({ problem, descriptionHtml, code, onCodeChange, onReset, onRunShortcut }) {
   const partTag = problem?.num <= 36 ? 'Part 1' : 'Part 2';
   const editUrl = problem
     ? `${GITHUB_REPO_URL}/tree/${GITHUB_DEFAULT_BRANCH}/problems/${problem.dir}`
@@ -18,6 +18,14 @@ export function EditorPanel({ problem, code, onCodeChange, onReset, onRunShortcu
           <span>{partTag}</span>
         </div>
       </div>
+
+      {descriptionHtml && (
+        <section
+          className={styles.problemStatement}
+          aria-label="Problem statement"
+          dangerouslySetInnerHTML={{ __html: descriptionHtml }}
+        />
+      )}
 
       <div className={styles.editorToolbar}>
         <span className={styles.toolbarLabel}>Solution</span>

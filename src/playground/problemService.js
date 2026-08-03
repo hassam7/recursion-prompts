@@ -33,6 +33,10 @@ export function loadProblemStub(problem) {
   return fetchText(`/problems/${problem.dir}/problem.js`);
 }
 
+export function loadProblemDescription(problem) {
+  return fetchText(`/problems/${problem.dir}/description.html`);
+}
+
 export function loadProblemSpec(problem) {
   return fetchText(`/problems/${problem.dir}/spec.js`);
 }

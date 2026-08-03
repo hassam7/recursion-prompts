@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { AnalyticsEvent, track } from '../../playground/analytics.js';
-import { loadManifest, loadMochaCss, loadProblemSpec, loadProblemStub, prefetchTestLibraries } from '../../playground/problemService.js';
+import { loadManifest, loadMochaCss, loadProblemDescription, loadProblemSpec, loadProblemStub, prefetchTestLibraries } from '../../playground/problemService.js';
 import { runTestsInFrame } from '../../playground/testRunner.js';
 import { Header } from './Header.jsx';
 import { Sidebar } from './Sidebar.jsx';
@@ -31,6 +31,7 @@ export default function PlaygroundApp() {
   const [manifest, setManifest] = useState([]);
   const [currentProblemNumber, setCurrentProblemNumber] = useState(1);
   const [stubCache, setStubCache] = useState({});
+  const [descriptionCache, setDescriptionCache] = useState({});
   const [userCode, setUserCode] = useState({});
   const [codeDraft, setCodeDraft] = useState('');
   const [libCache, setLibCache] = useState(null);
@@ -65,9 +66,16 @@ export default function PlaygroundApp() {
       return;
     }
 
-    const nextStub = stubCache[problemNumber] || await loadProblemStub(problem);
+    const [nextStub, nextDescription] = await Promise.all([
+      stubCache[problemNumber] || loadProblemStub(problem),
+      descriptionCache[problemNumber] || loadProblemDescription(problem),
+    ]);
+
     if (!stubCache[problemNumber]) {
       setStubCache((previous) => ({ ...previous, [problemNumber]: nextStub }));
+    }
+    if (!descriptionCache[problemNumber]) {
+      setDescriptionCache((previous) => ({ ...previous, [problemNumber]: nextDescription }));
     }
 
     const savedCode = userCode[problemNumber];
@@ -99,7 +107,10 @@ export default function PlaygroundApp() {
 
         const startProblemNumber = getProblemFromURL(loadedManifest.length);
         const startProblem = loadedManifest.find((problem) => problem.num === startProblemNumber) || loadedManifest[0];
-        const startStub = await loadProblemStub(startProblem);
+        const [startStub, startDescription] = await Promise.all([
+          loadProblemStub(startProblem),
+          loadProblemDescription(startProblem),
+        ]);
 
         if (ignore) {
           return;
@@ -109,6 +120,7 @@ export default function PlaygroundApp() {
         setLibCache(loadedLibCache);
         setCurrentProblemNumber(startProblem.num);
         setStubCache({ [startProblem.num]: startStub });
+        setDescriptionCache({ [startProblem.num]: startDescription });
         setCodeDraft(startStub);
         setIsLoading(false);
         window.history.replaceState({ problem: startProblem.num }, '', `?problem=${startProblem.num}`);
@@ -135,7 +147,7 @@ export default function PlaygroundApp() {
 
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
-  }, [manifest, problemByNumber, stubCache, userCode, isRunning]);
+  }, [manifest, problemByNumber, stubCache, descriptionCache, userCode, isRunning]);
 
   function handleCodeChange(nextCode) {
     if (!currentProblem) {
@@ -254,6 +266,7 @@ export default function PlaygroundApp() {
 
       <EditorPanel
         problem={currentProblem}
+        descriptionHtml={descriptionCache[currentProblemNumber] || ''}
         code={codeDraft}
         onCodeChange={handleCodeChange}
         onReset={handleReset}
