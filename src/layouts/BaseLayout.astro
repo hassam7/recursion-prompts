@@ -11,6 +11,8 @@ const {
 } = Astro.props;
 
 const canonicalUrl = siteUrl(canonicalPath);
+const googleAnalyticsId = 'G-K2PDEJP5B5';
+const posthogProjectKey = 'phc_A9ytvBBnKPb6Dwnss7xNpgq7LQENpWJctH9GTvkjbi2W';
 ---
 
 <!doctype html>
@@ -28,6 +30,36 @@ const canonicalUrl = siteUrl(canonicalPath);
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
+    <script async src={`https://www.googletagmanager.com/gtag/js?id=${googleAnalyticsId}`}></script>
+    <script define:vars={{ googleAnalyticsId }}>
+      window.dataLayer = window.dataLayer || [];
+      window.gtag = function gtag() {
+        window.dataLayer.push(arguments);
+      };
+      window.gtag('js', new Date());
+      window.gtag('config', googleAnalyticsId);
+    </script>
+    <script define:vars={{ posthogProjectKey }}>
+      window.posthog = window.posthog || [];
+      window.posthog.capture = window.posthog.capture || function capture() {
+        window.posthog.push(['capture'].concat(Array.prototype.slice.call(arguments)));
+      };
+
+      const posthogScript = document.createElement('script');
+      posthogScript.async = true;
+      posthogScript.crossOrigin = 'anonymous';
+      posthogScript.src = 'https://us-assets.i.posthog.com/static/array.js';
+      posthogScript.addEventListener('load', () => {
+        if (typeof window.posthog.init === 'function') {
+          window.posthog.init(posthogProjectKey, {
+            api_host: 'https://us.i.posthog.com',
+            defaults: '2026-05-30',
+            person_profiles: 'identified_only',
+          });
+        }
+      }, { once: true });
+      document.head.appendChild(posthogScript);
+    </script>
     {structuredData && (
       <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
     )}
