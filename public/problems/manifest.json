@@ -1,0 +1,314 @@
+[
+  {
+    "num": 1,
+    "slug": "factorial",
+    "title": "Factorial",
+    "dir": "01-factorial"
+  },
+  {
+    "num": 2,
+    "slug": "sum",
+    "title": "Sum of Integers",
+    "dir": "02-sum"
+  },
+  {
+    "num": 3,
+    "slug": "array-sum",
+    "title": "Sum Integers in Array",
+    "dir": "03-array-sum"
+  },
+  {
+    "num": 4,
+    "slug": "is-even",
+    "title": "Check if Even",
+    "dir": "04-is-even"
+  },
+  {
+    "num": 5,
+    "slug": "sum-below",
+    "title": "Sum Below",
+    "dir": "05-sum-below"
+  },
+  {
+    "num": 6,
+    "slug": "range",
+    "title": "Integer Range",
+    "dir": "06-range"
+  },
+  {
+    "num": 7,
+    "slug": "exponent",
+    "title": "Compute Exponent",
+    "dir": "07-exponent"
+  },
+  {
+    "num": 8,
+    "slug": "power-of-two",
+    "title": "Power of Two",
+    "dir": "08-power-of-two"
+  },
+  {
+    "num": 9,
+    "slug": "reverse",
+    "title": "Reverse String",
+    "dir": "09-reverse"
+  },
+  {
+    "num": 10,
+    "slug": "palindrome",
+    "title": "Palindrome",
+    "dir": "10-palindrome"
+  },
+  {
+    "num": 11,
+    "slug": "modulo",
+    "title": "Modulo",
+    "dir": "11-modulo"
+  },
+  {
+    "num": 12,
+    "slug": "multiply",
+    "title": "Multiply",
+    "dir": "12-multiply"
+  },
+  {
+    "num": 13,
+    "slug": "divide",
+    "title": "Divide",
+    "dir": "13-divide"
+  },
+  {
+    "num": 14,
+    "slug": "gcd",
+    "title": "Greatest Common Divisor",
+    "dir": "14-gcd"
+  },
+  {
+    "num": 15,
+    "slug": "compare-str",
+    "title": "Compare Strings",
+    "dir": "15-compare-str"
+  },
+  {
+    "num": 16,
+    "slug": "create-array",
+    "title": "Create array from string",
+    "dir": "16-create-array"
+  },
+  {
+    "num": 17,
+    "slug": "reverse-arr",
+    "title": "Reverse an array",
+    "dir": "17-reverse-arr"
+  },
+  {
+    "num": 18,
+    "slug": "build-list",
+    "title": "Build an array with a given value",
+    "dir": "18-build-list"
+  },
+  {
+    "num": 19,
+    "slug": "fizz-buzz",
+    "title": "FizzBuzz",
+    "dir": "19-fizz-buzz"
+  },
+  {
+    "num": 20,
+    "slug": "count-occurrence",
+    "title": "Count value in array",
+    "dir": "20-count-occurrence"
+  },
+  {
+    "num": 21,
+    "slug": "r-map",
+    "title": "Recursive Map",
+    "dir": "21-r-map"
+  },
+  {
+    "num": 22,
+    "slug": "count-keys-in-obj",
+    "title": "Count key in object",
+    "dir": "22-count-keys-in-obj"
+  },
+  {
+    "num": 23,
+    "slug": "count-vals-in-obj",
+    "title": "Count value in object",
+    "dir": "23-count-vals-in-obj"
+  },
+  {
+    "num": 24,
+    "slug": "replace-keys",
+    "title": "Replace keys in object",
+    "dir": "24-replace-keys"
+  },
+  {
+    "num": 25,
+    "slug": "fibonacci",
+    "title": "First n Fibonacci",
+    "dir": "25-fibonacci"
+  },
+  {
+    "num": 26,
+    "slug": "nth-fibo",
+    "title": "Return nth Fibonacci",
+    "dir": "26-nth-fibo"
+  },
+  {
+    "num": 27,
+    "slug": "capitalize-words",
+    "title": "Capitalize words in array",
+    "dir": "27-capitalize-words"
+  },
+  {
+    "num": 28,
+    "slug": "capitalize-first",
+    "title": "Capitalize first letter",
+    "dir": "28-capitalize-first"
+  },
+  {
+    "num": 29,
+    "slug": "nested-even-sum",
+    "title": "Sum even numbers in nested objects",
+    "dir": "29-nested-even-sum"
+  },
+  {
+    "num": 30,
+    "slug": "flatten",
+    "title": "Flatten nested arrays",
+    "dir": "30-flatten"
+  },
+  {
+    "num": 31,
+    "slug": "letter-tally",
+    "title": "Tally letters in string",
+    "dir": "31-letter-tally"
+  },
+  {
+    "num": 32,
+    "slug": "compress",
+    "title": "Eliminate consecutive duplicates",
+    "dir": "32-compress"
+  },
+  {
+    "num": 33,
+    "slug": "augment-elements",
+    "title": "Augment each element",
+    "dir": "33-augment-elements"
+  },
+  {
+    "num": 34,
+    "slug": "minimize-zeroes",
+    "title": "Minimize zeroes",
+    "dir": "34-minimize-zeroes"
+  },
+  {
+    "num": 35,
+    "slug": "alternate-sign",
+    "title": "Alternate sign",
+    "dir": "35-alternate-sign"
+  },
+  {
+    "num": 36,
+    "slug": "num-to-text",
+    "title": "Convert numbers to text",
+    "dir": "36-num-to-text"
+  },
+  {
+    "num": 37,
+    "slug": "tag-count",
+    "title": "Count Tags",
+    "dir": "37-tag-count"
+  },
+  {
+    "num": 38,
+    "slug": "binary-search",
+    "title": "Binary Search",
+    "dir": "38-binary-search"
+  },
+  {
+    "num": 39,
+    "slug": "merge-sort",
+    "title": "Merge Sort",
+    "dir": "39-merge-sort"
+  },
+  {
+    "num": 40,
+    "slug": "clone",
+    "title": "Clone",
+    "dir": "40-clone"
+  },
+  {
+    "num": 41,
+    "slug": "array-depth",
+    "title": "Nested Array Depth",
+    "dir": "41-array-depth"
+  },
+  {
+    "num": 42,
+    "slug": "deep-includes",
+    "title": "Deep Includes",
+    "dir": "42-deep-includes"
+  },
+  {
+    "num": 43,
+    "slug": "count-nested-arrays",
+    "title": "Count Nested Arrays",
+    "dir": "43-count-nested-arrays"
+  },
+  {
+    "num": 44,
+    "slug": "get-by-path",
+    "title": "Object Path Lookup",
+    "dir": "44-get-by-path"
+  },
+  {
+    "num": 45,
+    "slug": "deep-freeze",
+    "title": "Deep Freeze",
+    "dir": "45-deep-freeze"
+  },
+  {
+    "num": 46,
+    "slug": "tree-sum",
+    "title": "Tree Sum",
+    "dir": "46-tree-sum"
+  },
+  {
+    "num": 47,
+    "slug": "tree-includes",
+    "title": "Find In Tree",
+    "dir": "47-tree-includes"
+  },
+  {
+    "num": 48,
+    "slug": "subsets",
+    "title": "Subsets",
+    "dir": "48-subsets"
+  },
+  {
+    "num": 49,
+    "slug": "permutations",
+    "title": "String Permutations",
+    "dir": "49-permutations"
+  },
+  {
+    "num": 50,
+    "slug": "generate-parentheses",
+    "title": "Generate Parentheses",
+    "dir": "50-generate-parentheses"
+  },
+  {
+    "num": 51,
+    "slug": "element-spellable",
+    "title": "Element Spellable",
+    "dir": "51-element-spellable"
+  },
+  {
+    "num": 52,
+    "slug": "can-make-playlist",
+    "title": "Can Make Playlist",
+    "dir": "52-can-make-playlist"
+  }
+]

@@ -2,6 +2,14 @@
   "name": "recursion-prompts",
   "private": true,
   "scripts": {
-    "dev": "node server.js"
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@astrojs/react": "latest",
+    "astro": "latest",
+    "react": "latest",
+    "react-dom": "latest"
   }
 }
