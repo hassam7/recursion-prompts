@@ -1,0 +1,71 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getProblemDescription, getProblemPrompt, getProblems, siteUrl } from '../../lib/problem-content.js';
+
+export async function getStaticPaths() {
+  const problems = await getProblems();
+
+  return Promise.all(problems.map(async (problem, index) => ({
+    params: { slug: problem.slug },
+    props: {
+      problem,
+      previousProblem: problems[index - 1] || null,
+      nextProblem: problems[index + 1] || null,
+      prompt: await getProblemPrompt(problem),
+    },
+  })));
+}
+
+const { problem, previousProblem, nextProblem, prompt } = Astro.props;
+const title = `${problem.title} Recursion Challenge - Recursion Prompts`;
+const description = getProblemDescription(problem);
+const canonicalPath = `/problems/${problem.slug}/`;
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'LearningResource',
+  name: `${problem.title} Recursion Challenge`,
+  description,
+  learningResourceType: 'Coding challenge',
+  programmingLanguage: 'JavaScript',
+  url: siteUrl(canonicalPath),
+  isPartOf: {
+    '@type': 'WebSite',
+    name: 'Recursion Prompts',
+    url: siteUrl('/'),
+  },
+};
+---
+
+<BaseLayout title={title} description={description} canonicalPath={canonicalPath} ogType="article" structuredData={structuredData}>
+  <main class="site-shell">
+    <header class="site-header">
+      <a class="site-brand" href="/">Recursion Prompts</a>
+      <nav class="site-nav" aria-label="Problem navigation">
+        <a href="/">All challenges</a>
+        <a href={`/playground/?problem=${problem.num}`}>Open playground</a>
+      </nav>
+    </header>
+
+    <div class="problem-layout">
+      <article class="problem-article">
+        <div class="eyebrow">Problem {problem.num}</div>
+        <h1>{problem.title} Recursion Challenge</h1>
+        <p>{description}</p>
+
+        <h2>Prompt</h2>
+        <pre class="prompt-block"><code>{prompt}</code></pre>
+
+        <div class="action-row">
+          <a class="button-link" href={`/playground/?problem=${problem.num}`}>Open in interactive editor</a>
+          <a class="button-link secondary" href="/">Browse all challenges</a>
+        </div>
+      </article>
+
+      <aside class="side-panel" aria-label="Adjacent challenges">
+        <h2>Keep going</h2>
+        {previousProblem && <a href={`/problems/${previousProblem.slug}/`}>Previous: {previousProblem.title}</a>}
+        {nextProblem && <a href={`/problems/${nextProblem.slug}/`}>Next: {nextProblem.title}</a>}
+      </aside>
+    </div>
+  </main>
+</BaseLayout>

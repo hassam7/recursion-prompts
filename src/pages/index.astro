@@ -1,0 +1,61 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getProblems, siteUrl } from '../lib/problem-content.js';
+
+const problems = await getProblems();
+const title = 'Recursion Prompts - JavaScript Recursion Practice';
+const description = `Practice JavaScript recursion with ${problems.length} interactive coding challenges, starter prompts, and browser-based test feedback.`;
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'LearningResource',
+  name: 'Recursion Prompts',
+  description,
+  learningResourceType: 'Coding challenge collection',
+  programmingLanguage: 'JavaScript',
+  url: siteUrl('/'),
+};
+---
+
+<BaseLayout title={title} description={description} structuredData={structuredData}>
+  <main class="site-shell">
+    <header class="site-header">
+      <a class="site-brand" href="/">Recursion Prompts</a>
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="/playground/">Playground</a>
+        <a href="#challenges">Challenges</a>
+      </nav>
+    </header>
+
+    <section class="hero" aria-labelledby="home-title">
+      <div>
+        <div class="eyebrow">JavaScript recursion practice</div>
+        <h1 id="home-title">Recursive thinking, one small challenge at a time.</h1>
+        <p class="hero-copy">
+          Work through {problems.length} focused recursion prompts, read each problem in plain HTML,
+          then open the interactive playground when you are ready to test a solution.
+        </p>
+        <div class="action-row">
+          <a class="button-link" href="/playground/">Open playground</a>
+          <a class="button-link secondary" href={`/problems/${problems[0].slug}/`}>Start with {problems[0].title}</a>
+        </div>
+      </div>
+
+      <aside class="stat-panel" aria-label="Challenge count">
+        <span class="stat-number">{problems.length}</span>
+        <p>crawlable recursion challenges with browser-based tests.</p>
+      </aside>
+    </section>
+
+    <section id="challenges" aria-labelledby="challenges-title">
+      <h2 id="challenges-title">All recursion challenges</h2>
+      <div class="problem-grid">
+        {problems.map((problem) => (
+          <a class="problem-link" href={`/problems/${problem.slug}/`}>
+            <span>Problem {problem.num}</span>
+            {problem.title}
+          </a>
+        ))}
+      </div>
+    </section>
+  </main>
+</BaseLayout>
