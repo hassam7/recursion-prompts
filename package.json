@@ -1,7 +1,19 @@
 {
   "name": "recursion-prompts",
   "private": true,
+  "type": "module",
   "scripts": {
-    "dev": "node server.js"
+    "sync:problems": "node scripts/sync-public-problems.mjs",
+    "predev": "npm run sync:problems",
+    "dev": "astro dev",
+    "prebuild": "npm run sync:problems",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@astrojs/react": "latest",
+    "astro": "latest",
+    "react": "latest",
+    "react-dom": "latest"
   }
 }

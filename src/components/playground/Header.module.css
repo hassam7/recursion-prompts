@@ -1,0 +1,120 @@
+.header {
+  z-index: 20;
+  display: flex;
+  grid-area: header;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+  padding: 0 18px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(19, 21, 31, 0.96);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text);
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.logoMark {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border-radius: 7px;
+  background: linear-gradient(135deg, var(--accent), var(--accentStrong));
+  color: #042f2e;
+  font-size: 0.85rem;
+  font-weight: 900;
+}
+
+.centerControls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-width: 0;
+  margin: 0 auto;
+}
+
+.navButton,
+.runButton,
+.menuButton {
+  border: 1px solid var(--border2);
+  border-radius: var(--radiusSm);
+  background: var(--surface2);
+  color: var(--text);
+  cursor: pointer;
+  font: inherit;
+}
+
+.navButton {
+  min-height: 34px;
+  padding: 0 12px;
+}
+
+.navButton:disabled,
+.runButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.problemBadge {
+  min-width: 108px;
+  color: var(--text2);
+  font-size: 0.86rem;
+  text-align: center;
+}
+
+.problemBadge span {
+  color: var(--text);
+  font-weight: 800;
+}
+
+.runButton {
+  min-height: 36px;
+  padding: 0 16px;
+  border-color: rgba(45, 212, 191, 0.35);
+  background: linear-gradient(135deg, var(--accent), var(--accentStrong));
+  color: #042f2e;
+  font-weight: 800;
+}
+
+.menuButton {
+  display: none;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+}
+
+.menuButton span {
+  display: block;
+  width: 18px;
+  height: 2px;
+  margin: 4px auto;
+  border-radius: 2px;
+  background: var(--text);
+}
+
+@media (max-width: 1100px) {
+  .menuButton {
+    display: block;
+    flex: 0 0 auto;
+  }
+}
+
+@media (max-width: 720px) {
+  .header {
+    flex-wrap: wrap;
+    padding: 10px 12px;
+  }
+
+  .centerControls {
+    order: 3;
+    width: 100%;
+  }
+}
