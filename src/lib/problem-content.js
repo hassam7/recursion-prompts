@@ -2,7 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 
 const ROOT = process.cwd();
-const PROBLEMS_DIR = path.join(ROOT, 'public', 'problems');
+const PROBLEMS_DIR = path.join(ROOT, 'problems');
 
 export async function getProblems() {
   const manifestPath = path.join(PROBLEMS_DIR, 'manifest.json');

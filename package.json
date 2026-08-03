@@ -2,7 +2,10 @@
   "name": "recursion-prompts",
   "private": true,
   "scripts": {
+    "sync:problems": "node scripts/sync-public-problems.mjs",
+    "predev": "npm run sync:problems",
     "dev": "astro dev",
+    "prebuild": "npm run sync:problems",
     "build": "astro build",
     "preview": "astro preview"
   },

@@ -79,7 +79,7 @@ recursion-prompts/
 ├── public/
 │   ├── lib/                    Browser test dependencies copied as static files
 │   │   └── css/mocha.css       Mocha styles injected only into the test iframe
-│   ├── problems/               Static problem data fetched by the playground
+│   ├── problems/               Generated runtime copy of challenge data
 │   └── robots.txt              Search crawler policy
 ├── src/
 │   ├── components/playground/  React playground components and CSS modules
@@ -91,7 +91,8 @@ recursion-prompts/
 │   ├── pages/sitemap.xml.js
 │   ├── playground/             Runtime services for tests, data, and analytics
 │   └── styles/site.css         Static site styles
-├── problems/                   Original challenge source files
+├── problems/                   Editable challenge source files
+├── scripts/sync-public-problems.mjs
 ├── lib/                        Original checked-in test dependency files
 └── README.md
 ```
@@ -144,7 +145,7 @@ The iframe still receives Mocha CSS from `public/lib/css/mocha.css`. Keep those 
 
 #### Problem Data
 
-The React playground fetches runtime data from `public/problems/`:
+The editable challenge source lives in `problems/`. Before Astro dev/build runs, `npm run sync:problems` copies that folder to `public/problems/` so the browser can fetch runtime data from stable static URLs:
 
 ```text
 /problems/manifest.json
@@ -152,9 +153,9 @@ The React playground fetches runtime data from `public/problems/`:
 /problems/01-factorial/spec.js
 ```
 
-Astro also reads the same public problem files at build time to generate static problem pages and the sitemap.
+Astro reads the source `problems/` folder at build time to generate static problem pages and the sitemap.
 
-If you change a challenge, update both the original `problems/` folder and the matching `public/problems/` copy until the repository is fully consolidated around one source location.
+If you change a challenge, edit only `problems/`. The `public/problems/` copy is generated and ignored by git.
 
 ---
 
