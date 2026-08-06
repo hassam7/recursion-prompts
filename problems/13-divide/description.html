@@ -1,2 +1,29 @@
-<p>Write a recursive function that divides two numbers without using the division operator or Math helpers.</p>
-<p>The function should return the whole-number quotient and ignore any decimal remainder. For example, <code>divide(17, 5)</code> should return <code>3</code>.</p>
+<p>Given two integers, return the whole-number quotient of <code>x</code> divided by <code>y</code> without using the multiplication (<code>*</code>), division (<code>/</code>), or modulo (<code>%</code>) operators, or <code>Math</code> methods. Ignore any decimal remainder.</p>
+
+<h4>Function Signature</h4>
+<pre><code>divide(x, y)</code></pre>
+
+<h4>Parameters</h4>
+<ul>
+  <li><code>x</code> — an integer (dividend).</li>
+  <li><code>y</code> — an integer (divisor).</li>
+</ul>
+
+<h4>Output</h4>
+<p>Return a number representing the integer quotient of <code>x / y</code> (truncated toward zero). If <code>y</code> is <code>0</code>, return <code>NaN</code>.</p>
+
+<h4>Constraints</h4>
+<ul>
+  <li>The function must use recursion.</li>
+  <li>Do not use <code>*</code>, <code>/</code>, <code>%</code>, or <code>Math</code>.</li>
+  <li>The function should accept exactly two arguments.</li>
+</ul>
+
+<h4>Examples</h4>
+<pre><code>divide(17, 5)      → 3
+divide(2, 1)       → 2
+divide(78, 453)    → 0
+divide(0, 32)      → 0
+divide(0, 0)       → NaN
+divide(-79, 82)    → 0
+divide(-275, -582) → 0</code></pre>
