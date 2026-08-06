@@ -1,2 +1,35 @@
-<p>Write a recursive function that determines whether a string is a palindrome.</p>
-<p>A palindrome reads the same forward and backward. For example, <code>palindrome('racecar')</code> should return <code>true</code>, while <code>palindrome('hello')</code> should return <code>false</code>.</p>
+<p>Given a string, determine whether it is a palindrome. A palindrome reads the same forward and backward. The comparison should be case-insensitive and should ignore spaces.</p>
+
+<h4>Function Signature</h4>
+<pre><code>palindrome(string)</code></pre>
+
+<h4>Parameters</h4>
+<ul>
+  <li><code>string</code> — a string that may contain letters, spaces, and mixed casing.</li>
+</ul>
+
+<h4>Output</h4>
+<p>Return <code>true</code> if the string is a palindrome, or <code>false</code> otherwise.</p>
+
+<h4>Constraints</h4>
+<ul>
+  <li>The function must use recursion.</li>
+  <li>Do not use <code>Array.prototype.reverse</code>.</li>
+  <li>The comparison is case-insensitive.</li>
+  <li>Spaces should be ignored when checking.</li>
+  <li>The function should accept exactly one argument.</li>
+</ul>
+
+<h4>Examples</h4>
+<pre><code>palindrome('racecar')  → true
+palindrome('Rotor')    → true
+palindrome('hello')    → false
+palindrome('o')        → true
+palindrome('hi')       → false</code></pre>
+
+<h4>Edge Cases</h4>
+<ul>
+  <li>A single character is always a palindrome.</li>
+  <li>Strings with mixed casing like <code>'Rotor'</code> should return <code>true</code>.</li>
+  <li>Strings with spaces like <code>'sAip puaki v iKaup Pias'</code> should return <code>true</code> (spaces ignored).</li>
+</ul>
