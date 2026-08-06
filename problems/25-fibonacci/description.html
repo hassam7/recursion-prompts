@@ -1,2 +1,27 @@
-<p>Write a recursive function that returns the first <code>n</code> Fibonacci numbers.</p>
-<p>In the Fibonacci sequence, each number is the sum of the two numbers before it. For example, <code>fibonacci(5)</code> should return <code>[0, 1, 1, 2, 3, 5]</code>. The starting <code>0</code> is included in the output but does not count toward <code>n</code>.</p>
+<p>Given a positive integer <code>n</code>, return an array containing the first <code>n</code> Fibonacci numbers. The Fibonacci sequence starts with <code>0</code> and <code>1</code>, and each subsequent number is the sum of the two before it. The starting <code>0</code> is always included in the output but does not count toward <code>n</code>.</p>
+
+<h4>Function Signature</h4>
+<pre><code>fibonacci(n)</code></pre>
+
+<h4>Parameters</h4>
+<ul>
+  <li><code>n</code> — an integer. If zero or negative, return <code>null</code>.</li>
+</ul>
+
+<h4>Output</h4>
+<p>Return an array of Fibonacci numbers, or <code>null</code> if <code>n</code> is zero or negative.</p>
+
+<h4>Constraints</h4>
+<ul>
+  <li>The function must use recursion.</li>
+  <li>The function should accept exactly one argument.</li>
+</ul>
+
+<h4>Examples</h4>
+<pre><code>fibonacci(1)  → [0, 1]
+fibonacci(2)  → [0, 1, 1]
+fibonacci(3)  → [0, 1, 1, 2]
+fibonacci(5)  → [0, 1, 1, 2, 3, 5]
+fibonacci(8)  → [0, 1, 1, 2, 3, 5, 8, 13, 21]
+fibonacci(0)  → null
+fibonacci(-7) → null</code></pre>
