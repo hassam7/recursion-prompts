@@ -1,2 +1,31 @@
-<p>Write a recursive function that returns every subset of an input array.</p>
-<p>The order of the subsets does not matter. For example, <code>subsets([1, 2])</code> should include <code>[]</code>, <code>[1]</code>, <code>[2]</code>, and <code>[1, 2]</code>.</p>
+<p>Given an array, return an array containing every possible subset (the power set). The order of the subsets does not matter.</p>
+
+<h4>Function Signature</h4>
+<pre><code>subsets(array)</code></pre>
+
+<h4>Parameters</h4>
+<ul>
+  <li><code>array</code> — an array of values.</li>
+</ul>
+
+<h4>Output</h4>
+<p>Return an array of arrays, where each inner array is a subset of the input.</p>
+
+<h4>Constraints</h4>
+<ul>
+  <li>The function must use recursion.</li>
+  <li>The input array must not be mutated.</li>
+  <li>The function should accept exactly one argument.</li>
+</ul>
+
+<h4>Examples</h4>
+<pre><code>subsets([])        → [[]]
+subsets([1])       → [[], [1]]
+subsets([1, 2])    → [[], [1], [2], [1, 2]]
+subsets(['a', 'b', 'c'])
+→ [[], ['a'], ['b'], ['c'], ['a', 'b'], ['a', 'c'], ['b', 'c'], ['a', 'b', 'c']]</code></pre>
+
+<h4>Edge Cases</h4>
+<ul>
+  <li>An empty array should return <code>[[]]</code> (an array containing only the empty subset).</li>
+</ul>

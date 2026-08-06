@@ -1,2 +1,42 @@
-<p>Write a recursive function that adds the values in a tree.</p>
-<p>Each node has a <code>value</code> and a <code>children</code> array. For example, a root value of <code>1</code> with one child value of <code>2</code> should return <code>3</code>.</p>
+<p>Given a tree node, return the sum of all <code>value</code> properties in the tree. Each node is an object with a numeric <code>value</code> and a <code>children</code> array containing zero or more child nodes of the same shape.</p>
+
+<h4>Function Signature</h4>
+<pre><code>treeSum(node)</code></pre>
+
+<h4>Parameters</h4>
+<ul>
+  <li><code>node</code> — a tree node with the structure <code>{value: number, children: [node, ...]}</code>.</li>
+</ul>
+
+<h4>Data Structure</h4>
+<pre><code>{
+  value: number,
+  children: Array  // each element is a node with the same shape
+}</code></pre>
+
+<h4>Output</h4>
+<p>Return a number representing the sum of all node values in the tree.</p>
+
+<h4>Constraints</h4>
+<ul>
+  <li>The function must use recursion.</li>
+  <li>The input tree must not be mutated.</li>
+  <li>The function should accept exactly one argument.</li>
+</ul>
+
+<h4>Examples</h4>
+<pre><code>treeSum({value: 7, children: []}) → 7
+
+treeSum({
+  value: 5,
+  children: [
+    {value: 3, children: []},
+    {value: 2, children: [
+      {value: 4, children: []},
+      {value: 6, children: []}
+    ]}
+  ]
+}) → 20
+
+treeSum({value: -1, children: [{value: 2, children: [{value: -3, children: []}]}]})
+→ -2</code></pre>

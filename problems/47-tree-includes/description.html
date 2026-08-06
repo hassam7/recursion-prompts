@@ -1,2 +1,36 @@
-<p>Write a recursive function that searches a tree for a target value.</p>
-<p>Each node has a <code>value</code> and a <code>children</code> array. For example, <code>treeIncludes({value: 'root', children: [{value: 'leaf', children: []}]}, 'leaf')</code> should return <code>true</code>.</p>
+<p>Given a tree node and a target value, determine whether the target exists anywhere in the tree. Each node is an object with a <code>value</code> and a <code>children</code> array.</p>
+
+<h4>Function Signature</h4>
+<pre><code>treeIncludes(node, target)</code></pre>
+
+<h4>Parameters</h4>
+<ul>
+  <li><code>node</code> — a tree node with the structure <code>{value: any, children: [node, ...]}</code>.</li>
+  <li><code>target</code> — the value to search for.</li>
+</ul>
+
+<h4>Data Structure</h4>
+<pre><code>{
+  value: any,
+  children: Array  // each element is a node with the same shape
+}</code></pre>
+
+<h4>Output</h4>
+<p>Return <code>true</code> if the target is found in any node's value, or <code>false</code> otherwise.</p>
+
+<h4>Constraints</h4>
+<ul>
+  <li>The function must use recursion.</li>
+  <li>The input tree must not be mutated.</li>
+  <li>The function should accept exactly two arguments.</li>
+</ul>
+
+<h4>Examples</h4>
+<pre><code>treeIncludes({value: 'root', children: [{value: 'leaf', children: []}]}, 'leaf')
+→ true
+
+treeIncludes({value: 1, children: [{value: 2, children: [{value: 3, children: []}]}]}, 4)
+→ false
+
+treeIncludes({value: 'a', children: []}, 'a')
+→ true</code></pre>

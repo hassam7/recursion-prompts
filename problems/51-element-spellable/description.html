@@ -1,3 +1,36 @@
-<p>Write a recursive function that determines whether a word can be spelled using symbols from the periodic table.</p>
-<p>The function receives a word and an array of valid element symbols. Matching should be case-insensitive, but the returned symbols must keep the capitalization from the symbols list.</p>
-<p>For example, <code>elementSpellable('began', ['Be', 'Ga', 'N'])</code> should return <code>['Be', 'Ga', 'N']</code>, while a word that cannot be built from the symbols should return <code>null</code>. The empty string should return <code>[]</code>.</p>
+<p>Given a word and an array of element symbols, determine whether the word can be spelled by concatenating symbols from the list. Matching is case-insensitive, but the returned symbols must preserve the capitalization from the symbols array. Each symbol may be used more than once.</p>
+
+<h4>Function Signature</h4>
+<pre><code>elementSpellable(text, symbols)</code></pre>
+
+<h4>Parameters</h4>
+<ul>
+  <li><code>text</code> — a string representing the word to spell.</li>
+  <li><code>symbols</code> — an array of strings representing available element symbols (e.g. <code>['Be', 'Ga', 'N']</code>).</li>
+</ul>
+
+<h4>Output</h4>
+<p>Return an array of symbols (with original capitalization) that spell the word, or <code>null</code> if the word cannot be spelled. An empty string should return <code>[]</code>.</p>
+
+<h4>Constraints</h4>
+<ul>
+  <li>The function must use recursion.</li>
+  <li>Matching is case-insensitive.</li>
+  <li>Returned symbols must preserve capitalization from the input array.</li>
+  <li>The function should accept exactly two arguments.</li>
+</ul>
+
+<h4>Examples</h4>
+<pre><code>elementSpellable('began', ['Be', 'Ga', 'N'])   → ['Be', 'Ga', 'N']
+elementSpellable('feline', ['Fe', 'Li', 'Ne'])  → ['Fe', 'Li', 'Ne']
+elementSpellable('BeGaN', ['Be', 'Ga', 'N'])    → ['Be', 'Ga', 'N']
+elementSpellable('interesting', ['I', 'N', 'Te']) → null
+elementSpellable('', ['H', 'He'])               → []
+elementSpellable('began', [])                   → null</code></pre>
+
+<h4>Edge Cases</h4>
+<ul>
+  <li>An empty string is always spellable and returns <code>[]</code>.</li>
+  <li>An empty symbols array with a non-empty word returns <code>null</code>.</li>
+  <li>Some words require backtracking when a greedy match leads to a dead end.</li>
+</ul>

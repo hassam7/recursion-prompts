@@ -1,3 +1,39 @@
-<p>Write a recursive function that decides whether a workout playlist can be built from a list of song lengths.</p>
-<p>The playlist must add up exactly to <code>workoutLength</code>, and each song length may be used at most <code>maxTimes</code>. Return <code>true</code> when a valid playlist exists and <code>false</code> otherwise.</p>
-<p>Throw an error if <code>workoutLength</code>, <code>maxTimes</code>, or any song length is negative. For example, <code>canMakePlaylist([3, 5, 7], 10, 2)</code> should return <code>true</code>, while <code>canMakePlaylist([4], 12, 2)</code> should return <code>false</code>.</p>
+<p>Given an array of song lengths, a target workout length, and a maximum number of times each song can be used, determine whether a playlist can be built that adds up exactly to the workout length.</p>
+
+<h4>Function Signature</h4>
+<pre><code>canMakePlaylist(songLengths, workoutLength, maxTimes)</code></pre>
+
+<h4>Parameters</h4>
+<ul>
+  <li><code>songLengths</code> — an array of non-negative integers representing available song durations.</li>
+  <li><code>workoutLength</code> — a non-negative integer representing the exact target duration.</li>
+  <li><code>maxTimes</code> — a non-negative integer representing the maximum number of times each song can be used.</li>
+</ul>
+
+<h4>Output</h4>
+<p>Return <code>true</code> if a valid combination of songs can sum to exactly <code>workoutLength</code>, or <code>false</code> otherwise.</p>
+
+<h4>Constraints</h4>
+<ul>
+  <li>The function must use recursion.</li>
+  <li>Each song may be used at most <code>maxTimes</code> times.</li>
+  <li>The input array must not be mutated.</li>
+  <li>The function should always accept exactly three arguments.</li>
+</ul>
+
+<h4>Examples</h4>
+<pre><code>canMakePlaylist([3, 5, 7], 10, 2)  → true   (3 + 7)
+canMakePlaylist([4], 8, 2)         → true   (4 + 4)
+canMakePlaylist([4], 12, 2)        → false  (would need 4 three times)
+canMakePlaylist([5, 9], 8, 3)      → false
+canMakePlaylist([3, 5], 0, 2)      → true   (empty playlist)
+canMakePlaylist([], 5, 2)          → false
+canMakePlaylist([2, 3], 7, 2)      → true   (2 + 2 + 3)
+canMakePlaylist([2, 3], 9, 2)      → false</code></pre>
+
+<h4>Edge Cases</h4>
+<ul>
+  <li>A workout length of <code>0</code> is always achievable (empty playlist).</li>
+  <li>An empty song list with a non-zero workout length returns <code>false</code>.</li>
+  <li>If <code>maxTimes</code> is <code>0</code>, no songs can be used, so only workout length <code>0</code> returns <code>true</code>.</li>
+</ul>

@@ -1,2 +1,27 @@
-<p>Write a recursive function that returns every permutation of a string.</p>
-<p>The order of the returned permutations does not matter. For example, <code>permutations('abc')</code> should include <code>'abc'</code>, <code>'acb'</code>, <code>'bac'</code>, <code>'bca'</code>, <code>'cab'</code>, and <code>'cba'</code>.</p>
+<p>Given a string, return an array containing every unique permutation of its characters. The order of the returned permutations does not matter. If the string contains duplicate characters, do not include duplicate permutations.</p>
+
+<h4>Function Signature</h4>
+<pre><code>permutations(str)</code></pre>
+
+<h4>Parameters</h4>
+<ul>
+  <li><code>str</code> — a string of characters, which may include repeated letters.</li>
+</ul>
+
+<h4>Output</h4>
+<p>Return an array of strings, each being a unique permutation of the input.</p>
+
+<h4>Constraints</h4>
+<ul>
+  <li>The function must use recursion.</li>
+  <li>Duplicate permutations should not be included.</li>
+  <li>The function should accept exactly one argument.</li>
+</ul>
+
+<h4>Examples</h4>
+<pre><code>permutations('')    → ['']
+permutations('a')   → ['a']
+permutations('ab')  → ['ab', 'ba']
+permutations('abc') → ['abc', 'acb', 'bac', 'bca', 'cab', 'cba']
+permutations('aa')  → ['aa']
+permutations('aba') → ['aab', 'aba', 'baa']</code></pre>
