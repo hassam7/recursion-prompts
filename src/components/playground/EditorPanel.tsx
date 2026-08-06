@@ -6,14 +6,13 @@ const GITHUB_DEFAULT_BRANCH = 'master';
 
 interface EditorPanelProps {
   problem: Problem | null;
-  descriptionHtml: string;
   code: string;
   onCodeChange: (code: string) => void;
   onReset: () => void;
   onRunShortcut: () => void;
 }
 
-export function EditorPanel({ problem, descriptionHtml, code, onCodeChange, onReset, onRunShortcut }: EditorPanelProps) {
+export function EditorPanel({ problem, code, onCodeChange, onReset, onRunShortcut }: EditorPanelProps) {
   const partTag = problem && problem.num <= 36 ? 'Part 1' : 'Part 2';
   const editUrl = problem
     ? `${GITHUB_REPO_URL}/tree/${GITHUB_DEFAULT_BRANCH}/problems/${problem.dir}`
@@ -28,14 +27,6 @@ export function EditorPanel({ problem, descriptionHtml, code, onCodeChange, onRe
           <span>{partTag}</span>
         </div>
       </div>
-
-      {descriptionHtml && (
-        <section
-          className={styles.problemStatement}
-          aria-label="Problem statement"
-          dangerouslySetInnerHTML={{ __html: descriptionHtml }}
-        />
-      )}
 
       <div className={styles.editorToolbar}>
         <span className={styles.toolbarLabel}>Solution</span>

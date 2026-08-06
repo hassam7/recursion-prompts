@@ -6,17 +6,28 @@ function stripTopDescribe(fullTitle: string) {
 }
 
 interface ResultsPanelProps {
+  descriptionHtml: string;
   result?: TestRunResult;
   isTimeout: boolean;
 }
 
-export function ResultsPanel({ result, isTimeout }: ResultsPanelProps) {
+export function ResultsPanel({ descriptionHtml, result, isTimeout }: ResultsPanelProps) {
   const stats = result?.stats;
   const total = stats ? stats.passes + stats.failures : 0;
   const progress = stats && total ? `${(stats.passes / total) * 100}%` : '0%';
 
   return (
     <aside className={styles.resultsPanel}>
+      {descriptionHtml && (
+        <section className={styles.problemStatement} aria-label="Problem statement">
+          <div className={styles.statementTitle}>Problem Statement</div>
+          <div
+            className={styles.statementBody}
+            dangerouslySetInnerHTML={{ __html: descriptionHtml }}
+          />
+        </section>
+      )}
+
       <div className={styles.resultsHeader}>
         <div className={styles.resultsTitle}>Test Results</div>
         <div className={styles.progressBarWrap}>

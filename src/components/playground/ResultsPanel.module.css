@@ -8,6 +8,44 @@
   background: var(--surface);
 }
 
+.problemStatement {
+  max-height: 38%;
+  overflow: auto;
+  min-height: 0;
+  padding: 16px;
+  border-bottom: 1px solid var(--border);
+  background: #111827;
+  color: #e5e7eb;
+}
+
+.statementTitle {
+  margin-bottom: 10px;
+  color: var(--text);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.statementBody {
+  font-size: 0.9rem;
+  line-height: 1.65;
+}
+
+.statementBody p {
+  margin: 0 0 0.85rem;
+  color: inherit;
+}
+
+.statementBody p:last-child {
+  margin-bottom: 0;
+}
+
+.statementBody code {
+  color: #f8fafc;
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
 .resultsHeader {
   padding: 16px;
   border-bottom: 1px solid var(--border);
