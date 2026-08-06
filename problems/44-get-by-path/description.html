@@ -1,2 +1,33 @@
-<p>Write a recursive function that follows an array of keys through an object and returns the value at that path.</p>
-<p>If the path cannot be followed, return <code>undefined</code>. For example, <code>getByPath({ user: { profile: { name: 'Ada' } } }, ['user', 'profile', 'name'])</code> should return <code>'Ada'</code>.</p>
+<p>Given an object and an array of keys representing a path, return the value found by following the keys through the object. If the path cannot be followed at any point, return <code>undefined</code>.</p>
+
+<h4>Function Signature</h4>
+<pre><code>getByPath(object, path)</code></pre>
+
+<h4>Parameters</h4>
+<ul>
+  <li><code>object</code> — an object or value to traverse.</li>
+  <li><code>path</code> — an array of keys (strings or numbers) representing the lookup path.</li>
+</ul>
+
+<h4>Output</h4>
+<p>Return the value at the given path, or <code>undefined</code> if the path is invalid.</p>
+
+<h4>Constraints</h4>
+<ul>
+  <li>The function must use recursion.</li>
+  <li>The input object and path must not be mutated.</li>
+  <li>The function should accept exactly two arguments.</li>
+</ul>
+
+<h4>Examples</h4>
+<pre><code>getByPath({user: {profile: {name: 'Ada'}}}, ['user', 'profile', 'name']) → 'Ada'
+getByPath({active: true}, ['active'])                                    → true
+getByPath({users: [{name: 'Ada'}]}, ['users', 0, 'name'])               → 'Ada'
+getByPath({a: {b: 1}}, ['a', 'c'])                                      → undefined
+getByPath({a: 1}, [])                                                    → {a: 1}</code></pre>
+
+<h4>Edge Cases</h4>
+<ul>
+  <li>An empty path returns the input object itself.</li>
+  <li>If the object at any point in the path is <code>null</code> or <code>undefined</code>, return <code>undefined</code>.</li>
+</ul>

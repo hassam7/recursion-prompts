@@ -1,2 +1,25 @@
-<p>Write a recursive function that counts how many arrays are nested inside an array.</p>
-<p>Do not count the outermost input array. For example, <code>countNestedArrays([1, [2], [3, [4]], 5])</code> should return <code>3</code>.</p>
+<p>Given an array, return the total number of arrays nested inside it at any depth. Do not count the outermost input array itself.</p>
+
+<h4>Function Signature</h4>
+<pre><code>countNestedArrays(array)</code></pre>
+
+<h4>Parameters</h4>
+<ul>
+  <li><code>array</code> — an array that may contain values or nested arrays.</li>
+</ul>
+
+<h4>Output</h4>
+<p>Return a number representing the count of all nested arrays (excluding the input array).</p>
+
+<h4>Constraints</h4>
+<ul>
+  <li>The function must use recursion.</li>
+  <li>The input array must not be mutated.</li>
+  <li>The function should accept exactly one argument.</li>
+</ul>
+
+<h4>Examples</h4>
+<pre><code>countNestedArrays([])                      → 0
+countNestedArrays([1, 2, 3])               → 0
+countNestedArrays([1, [2], [3, [4]], 5])   → 3
+countNestedArrays([[], [[]], [[[]]]])      → 6</code></pre>

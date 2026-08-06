@@ -1,2 +1,29 @@
-<p>Write a recursive function that freezes an object or array and every nested object or array inside it.</p>
-<p>Return the same input after freezing it. For example, after calling <code>deepFreeze({a: {b: 1}})</code>, the nested object at <code>a</code> should also be frozen.</p>
+<p>Given an object or array, freeze it and every nested object or array inside it so that no properties can be modified. Return the same input after freezing. Primitive values should be returned as-is.</p>
+
+<h4>Function Signature</h4>
+<pre><code>deepFreeze(input)</code></pre>
+
+<h4>Parameters</h4>
+<ul>
+  <li><code>input</code> — any value. If it is an object or array, freeze it and all nested objects/arrays. Primitives are returned unchanged.</li>
+</ul>
+
+<h4>Output</h4>
+<p>Return the same input reference after deeply freezing it.</p>
+
+<h4>Constraints</h4>
+<ul>
+  <li>The function must use recursion.</li>
+  <li>The function should accept exactly one argument.</li>
+</ul>
+
+<h4>Examples</h4>
+<pre><code>deepFreeze({a: {b: {c: 1}}, d: 2})
+// All nested objects are now frozen
+
+deepFreeze([1, [2, {three: 3}], {four: [4]}])
+// All nested arrays and objects are now frozen
+
+deepFreeze(1)     → 1
+deepFreeze('hi')  → 'hi'
+deepFreeze(null)  → null</code></pre>
