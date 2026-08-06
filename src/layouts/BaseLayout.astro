@@ -30,8 +30,8 @@ const posthogProjectKey = 'phc_A9ytvBBnKPb6Dwnss7xNpgq7LQENpWJctH9GTvkjbi2W';
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
-    <script async src={`https://www.googletagmanager.com/gtag/js?id=${googleAnalyticsId}`}></script>
-    <script define:vars={{ googleAnalyticsId }}>
+    <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${googleAnalyticsId}`}></script>
+    <script is:inline define:vars={{ googleAnalyticsId }}>
       window.dataLayer = window.dataLayer || [];
       window.gtag = function gtag() {
         window.dataLayer.push(arguments);
@@ -39,7 +39,7 @@ const posthogProjectKey = 'phc_A9ytvBBnKPb6Dwnss7xNpgq7LQENpWJctH9GTvkjbi2W';
       window.gtag('js', new Date());
       window.gtag('config', googleAnalyticsId);
     </script>
-    <script define:vars={{ posthogProjectKey }}>
+    <script is:inline define:vars={{ posthogProjectKey }}>
       !function(documentRef, posthogRef) {
         var methodIndex;
         var scriptElement;
@@ -106,7 +106,7 @@ const posthogProjectKey = 'phc_A9ytvBBnKPb6Dwnss7xNpgq7LQENpWJctH9GTvkjbi2W';
       });
     </script>
     {structuredData && (
-      <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+      <script is:inline type="application/ld+json" set:html={JSON.stringify(structuredData)} />
     )}
   </head>
   <body>
