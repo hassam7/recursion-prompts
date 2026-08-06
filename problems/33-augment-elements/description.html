@@ -1,2 +1,25 @@
-<p>Write a recursive function that appends a value to every inner array in a list.</p>
-<p>For example, <code>augmentElements([[], [3], [7]], 5)</code> should return <code>[[5], [3, 5], [7, 5]]</code>.</p>
+<p>Given an array of arrays and a value, return a new array where the value has been appended to each inner array.</p>
+
+<h4>Function Signature</h4>
+<pre><code>augmentElements(array, aug)</code></pre>
+
+<h4>Parameters</h4>
+<ul>
+  <li><code>array</code> — an array of arrays.</li>
+  <li><code>aug</code> — any value to append to each inner array (number, string, <code>null</code>, <code>false</code>, <code>''</code>, etc.).</li>
+</ul>
+
+<h4>Output</h4>
+<p>Return a new array of arrays, each with <code>aug</code> appended.</p>
+
+<h4>Constraints</h4>
+<ul>
+  <li>The function must use recursion.</li>
+  <li>The function should accept exactly two arguments.</li>
+</ul>
+
+<h4>Examples</h4>
+<pre><code>augmentElements([[], [3], [7]], 5)     → [[5], [3, 5], [7, 5]]
+augmentElements([[], [3], [7]], null)  → [[null], [3, null], [7, null]]
+augmentElements([[], [3], [7]], '')    → [[''], [3, ''], [7, '']]
+augmentElements([[], [3], [7]], false) → [[false], [3, false], [7, false]]</code></pre>

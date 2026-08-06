@@ -1,2 +1,23 @@
-<p>Write a recursive function that reduces each consecutive run of zeroes to a single zero.</p>
-<p>For example, <code>minimizeZeroes([2, 0, 0, 0, 1, 4])</code> should return <code>[2, 0, 1, 4]</code>, and separate zero groups should each keep one zero.</p>
+<p>Given an array of numbers, return a new array where each consecutive run of zeroes is reduced to a single zero. Non-zero values and separate groups of zeroes should each retain one zero.</p>
+
+<h4>Function Signature</h4>
+<pre><code>minimizeZeroes(array)</code></pre>
+
+<h4>Parameters</h4>
+<ul>
+  <li><code>array</code> — an array of numbers.</li>
+</ul>
+
+<h4>Output</h4>
+<p>Return a new array with consecutive duplicate zeroes collapsed.</p>
+
+<h4>Constraints</h4>
+<ul>
+  <li>The function must use recursion.</li>
+  <li>The input array must not be mutated.</li>
+  <li>The function should accept exactly one argument.</li>
+</ul>
+
+<h4>Examples</h4>
+<pre><code>minimizeZeroes([2, 0, 0, 0, 1, 4])       → [2, 0, 1, 4]
+minimizeZeroes([2, 0, 0, 0, 1, 0, 0, 4]) → [2, 0, 1, 0, 4]</code></pre>
