@@ -2,6 +2,7 @@
   display: flex;
   grid-area: sidebar;
   min-height: 0;
+  overflow: hidden;
   flex-direction: column;
   border-right: 1px solid var(--border);
   background: var(--surface);
@@ -31,6 +32,7 @@
 }
 
 .problemList {
+  flex: 1 1 auto;
   overflow: auto;
   min-height: 0;
   padding: 0 8px 16px;

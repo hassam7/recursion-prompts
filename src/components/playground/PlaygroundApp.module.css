@@ -16,12 +16,13 @@
   --radius: 10px;
   --radiusSm: 8px;
   display: grid;
-  grid-template-rows: 56px 1fr;
+  grid-template-rows: 56px minmax(0, 1fr);
   grid-template-columns: 260px 1fr 380px;
   grid-template-areas:
     "header header header"
     "sidebar editor results";
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
   background: var(--bg);
   color: var(--text);
   font-family: Inter, ui-sans-serif, system-ui, sans-serif;
