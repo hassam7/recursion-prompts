@@ -36,6 +36,28 @@
   overflow: auto;
   min-height: 0;
   padding: 0 8px 16px;
+  scrollbar-color: rgba(45, 212, 191, 0.45) rgba(255, 255, 255, 0.04);
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+}
+
+.problemList::-webkit-scrollbar {
+  width: 10px;
+}
+
+.problemList::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 999px;
+}
+
+.problemList::-webkit-scrollbar-thumb {
+  border: 2px solid var(--surface);
+  border-radius: 999px;
+  background: rgba(45, 212, 191, 0.45);
+}
+
+.problemList::-webkit-scrollbar-thumb:hover {
+  background: rgba(45, 212, 191, 0.7);
 }
 
 .problemItem {
