@@ -1,2 +1,27 @@
-<p>Write a recursive function that deeply clones arrays and objects.</p>
-<p>For example, <code>clone({a: 1, b: {c: 2}})</code> should return an equal object, but the nested <code>b</code> object should be a new reference.</p>
+<p>Given an object or array, return a deep clone where every nested object and array is a new reference. Primitive values should be copied as-is.</p>
+
+<h4>Function Signature</h4>
+<pre><code>clone(input)</code></pre>
+
+<h4>Parameters</h4>
+<ul>
+  <li><code>input</code> — an object or array, potentially containing nested objects and arrays.</li>
+</ul>
+
+<h4>Output</h4>
+<p>Return a new object or array that deeply equals the input but shares no references with it.</p>
+
+<h4>Constraints</h4>
+<ul>
+  <li>The function must use recursion.</li>
+  <li>Do not use <code>JSON.parse</code>, <code>JSON.stringify</code>, or <code>Object.assign</code>.</li>
+  <li>The input must not be mutated.</li>
+  <li>The function should accept exactly one argument.</li>
+</ul>
+
+<h4>Examples</h4>
+<pre><code>clone({a: 1, b: {bb: {bbb: 2}}, c: 3})
+→ {a: 1, b: {bb: {bbb: 2}}, c: 3}  (new references for all nested objects)
+
+clone([1, [2, []], 3, [[[4]], 5]])
+→ [1, [2, []], 3, [[[4]], 5]]  (new references for all nested arrays)</code></pre>

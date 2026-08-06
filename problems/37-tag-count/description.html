@@ -1,2 +1,25 @@
-<p>Write a recursive function that counts how many times a given tag appears in the DOM.</p>
-<p>For example, if the page contains three <code>&lt;div&gt;</code> elements, <code>tagCount('div')</code> should return <code>3</code>.</p>
+<p>Given an HTML tag name, return the number of times that tag appears in the DOM. The function should traverse the DOM tree starting from <code>document.body</code> if no starting node is provided.</p>
+
+<h4>Function Signature</h4>
+<pre><code>tagCount(tag, node)</code></pre>
+
+<h4>Parameters</h4>
+<ul>
+  <li><code>tag</code> — a string representing an HTML tag name (e.g. <code>'div'</code>, <code>'p'</code>, <code>'span'</code>).</li>
+  <li><code>node</code> — (optional) a DOM node to start searching from. Defaults to <code>document.body</code>.</li>
+</ul>
+
+<h4>Output</h4>
+<p>Return a number representing how many elements with the given tag name exist in the DOM tree.</p>
+
+<h4>Constraints</h4>
+<ul>
+  <li>The function must use recursion.</li>
+  <li>The <code>tag</code> argument is required; <code>node</code> is optional.</li>
+  <li>The function should accept at most two arguments.</li>
+</ul>
+
+<h4>Examples</h4>
+<pre><code>// Given a page with 3 &lt;p&gt; elements and 2 &lt;div&gt; elements:
+tagCount('p')   → 3
+tagCount('div') → 2</code></pre>
