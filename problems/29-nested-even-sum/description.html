@@ -1,2 +1,29 @@
-<p>Write a recursive function that finds every even number inside an object and any nested objects, then returns their total.</p>
-<p>Ignore odd numbers and non-number values. For example, <code>nestedEvenSum({a: 2, b: {c: 4, d: 5}})</code> should return <code>6</code>.</p>
+<p>Given an object that may contain nested objects, return the sum of all even numbers found at any depth. Ignore odd numbers and non-number values.</p>
+
+<h4>Function Signature</h4>
+<pre><code>nestedEvenSum(obj)</code></pre>
+
+<h4>Parameters</h4>
+<ul>
+  <li><code>obj</code> — an object whose values may be numbers, strings, or nested objects.</li>
+</ul>
+
+<h4>Output</h4>
+<p>Return a number representing the sum of all even-valued numbers in the object tree.</p>
+
+<h4>Constraints</h4>
+<ul>
+  <li>The function must use recursion.</li>
+  <li>The function should accept exactly one argument.</li>
+</ul>
+
+<h4>Examples</h4>
+<pre><code>// Given:
+// {
+//   a: 2,
+//   b: {b: 2, bb: {b: 3, bb: {b: 2}}},
+//   c: {c: {c: 2}, cc: 'ball', ccc: 5},
+//   d: 1,
+//   e: {e: {e: 2}, ee: 'car'}
+// }
+nestedEvenSum(obj) → 10</code></pre>
