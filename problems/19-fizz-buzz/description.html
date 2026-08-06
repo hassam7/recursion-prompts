@@ -1,2 +1,23 @@
-<p>Write a recursive version of FizzBuzz. Given <code>n</code>, return an array of string values from <code>1</code> through <code>n</code>.</p>
-<p>Use <code>Fizz</code> for multiples of 3, <code>Buzz</code> for multiples of 5, and <code>FizzBuzz</code> for numbers divisible by both. For example, <code>fizzBuzz(5)</code> should return <code>['1', '2', 'Fizz', '4', 'Buzz']</code>.</p>
+<p>Given a positive integer <code>n</code>, return an array of string values from <code>1</code> through <code>n</code>. For multiples of 3, use <code>'Fizz'</code> instead of the number. For multiples of 5, use <code>'Buzz'</code>. For numbers divisible by both 3 and 5, use <code>'FizzBuzz'</code>. All other numbers should be their string representation.</p>
+
+<h4>Function Signature</h4>
+<pre><code>fizzBuzz(n)</code></pre>
+
+<h4>Parameters</h4>
+<ul>
+  <li><code>n</code> — a positive integer.</li>
+</ul>
+
+<h4>Output</h4>
+<p>Return an array of strings of length <code>n</code>.</p>
+
+<h4>Constraints</h4>
+<ul>
+  <li>The function must use recursion.</li>
+  <li>Every element in the returned array must be a string.</li>
+  <li>The function should accept exactly one argument.</li>
+</ul>
+
+<h4>Examples</h4>
+<pre><code>fizzBuzz(5)  → ['1', '2', 'Fizz', '4', 'Buzz']
+fizzBuzz(15) → ['1', '2', 'Fizz', '4', 'Buzz', 'Fizz', '7', '8', 'Fizz', 'Buzz', '11', 'Fizz', '13', '14', 'FizzBuzz']</code></pre>

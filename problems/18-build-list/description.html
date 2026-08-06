@@ -1,2 +1,27 @@
-<p>Write a recursive function that builds an array of a specific length using the same value for every item.</p>
-<p>For example, <code>buildList(0, 5)</code> should return <code>[0, 0, 0, 0, 0]</code>, and <code>buildList(7, 3)</code> should return <code>[7, 7, 7]</code>.</p>
+<p>Given a value and a length, return an array of the specified length where every element is the given value.</p>
+
+<h4>Function Signature</h4>
+<pre><code>buildList(value, length)</code></pre>
+
+<h4>Parameters</h4>
+<ul>
+  <li><code>value</code> — any value (number, string, boolean, object, array, <code>undefined</code>, <code>NaN</code>, etc.).</li>
+  <li><code>length</code> — a non-negative integer specifying the number of elements.</li>
+</ul>
+
+<h4>Output</h4>
+<p>Return an array of the given length filled with the given value.</p>
+
+<h4>Constraints</h4>
+<ul>
+  <li>The function must use recursion.</li>
+  <li>The function should accept exactly two arguments.</li>
+</ul>
+
+<h4>Examples</h4>
+<pre><code>buildList(0, 5)          → [0, 0, 0, 0, 0]
+buildList('banana', 3)   → ['banana', 'banana', 'banana']
+buildList(NaN, 4)        → [NaN, NaN, NaN, NaN]
+buildList(true, 3)       → [true, true, true]
+buildList(undefined, 1)  → [undefined]
+buildList([], 2)         → [[], []]</code></pre>

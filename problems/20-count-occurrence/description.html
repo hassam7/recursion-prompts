@@ -1,2 +1,26 @@
-<p>Write a recursive function that counts how many times a target value appears in an array.</p>
-<p>For example, <code>countOccurrence([2, 7, 4, 4, 1, 4], 4)</code> should return <code>3</code>, and <code>countOccurrence([2, 'banana', 4, 4, 1, 'banana'], 'banana')</code> should return <code>2</code>.</p>
+<p>Given an array and a target value, return the number of times the target appears in the array. Comparisons use strict equality.</p>
+
+<h4>Function Signature</h4>
+<pre><code>countOccurrence(array, value)</code></pre>
+
+<h4>Parameters</h4>
+<ul>
+  <li><code>array</code> — an array of values (numbers, strings, <code>undefined</code>, <code>null</code>, booleans, etc.).</li>
+  <li><code>value</code> — the target value to count.</li>
+</ul>
+
+<h4>Output</h4>
+<p>Return a number representing how many times <code>value</code> appears in the array.</p>
+
+<h4>Constraints</h4>
+<ul>
+  <li>The function must use recursion.</li>
+  <li>The function should accept exactly two arguments.</li>
+</ul>
+
+<h4>Examples</h4>
+<pre><code>countOccurrence([2, 7, 4, 4, 1, 4], 4)                     → 3
+countOccurrence([2, 'banana', 4, 4, 1, 'banana'], 'banana') → 2
+countOccurrence([undefined, 7, undefined], undefined)        → 2
+countOccurrence(['', null, 0, '0', false], 0)                → 1
+countOccurrence(['', null, 0, 'false', false], false)        → 1</code></pre>
