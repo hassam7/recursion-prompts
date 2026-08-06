@@ -34,6 +34,33 @@
   font-size: 0.76rem;
 }
 
+.problemStatement {
+  max-height: 180px;
+  overflow: auto;
+  margin: 12px 16px 14px;
+  padding: 14px 16px;
+  border: 1px solid var(--border2);
+  border-radius: var(--radius);
+  background: #111827;
+  color: #e5e7eb;
+  font-size: 0.9rem;
+  line-height: 1.65;
+}
+
+.problemStatement p {
+  margin: 0 0 0.85rem;
+  color: inherit;
+}
+
+.problemStatement p:last-child {
+  margin-bottom: 0;
+}
+
+.problemStatement code {
+  color: #f8fafc;
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
 .editorToolbar {
   display: flex;
   align-items: center;

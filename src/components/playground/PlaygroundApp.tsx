@@ -84,17 +84,14 @@ export default function PlaygroundApp() {
 
       <EditorPanel
         problem={problemSession.currentProblem}
+        descriptionHtml={problemSession.descriptionHtml}
         code={problemSession.codeDraft}
         onCodeChange={problemSession.handleCodeChange}
         onReset={problemSession.handleReset}
         onRunShortcut={handleRunTests}
       />
 
-      <ResultsPanel
-        descriptionHtml={problemSession.descriptionHtml}
-        result={currentResult}
-        isTimeout={isTimeout}
-      />
+      <ResultsPanel result={currentResult} isTimeout={isTimeout} />
 
       <iframe
         ref={testRunner.testFrameRef}
