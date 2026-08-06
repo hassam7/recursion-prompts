@@ -1,2 +1,34 @@
-<p>Write a recursive function that raises a base number to an exponent.</p>
-<p>The exponent tells you how many times to multiply the base by itself. For example, <code>exponent(4, 3)</code> should return <code>64</code>.</p>
+<p>Given a base number and an exponent, return the result of raising the base to the given power. The exponent may be negative.</p>
+
+<h4>Function Signature</h4>
+<pre><code>exponent(base, exp)</code></pre>
+
+<h4>Parameters</h4>
+<ul>
+  <li><code>base</code> — a non-negative integer representing the base.</li>
+  <li><code>exp</code> — an integer representing the exponent. May be positive, negative, or zero.</li>
+</ul>
+
+<h4>Output</h4>
+<p>Return a number representing <code>base</code> raised to the power of <code>exp</code>.</p>
+
+<h4>Constraints</h4>
+<ul>
+  <li>The function must use recursion.</li>
+  <li>Do not use <code>Math.pow</code> or the <code>**</code> operator.</li>
+  <li>The function should accept exactly two arguments.</li>
+</ul>
+
+<h4>Examples</h4>
+<pre><code>exponent(3, 4)  → 81
+exponent(7, 2)  → 49
+exponent(8, 0)  → 1
+exponent(9, 1)  → 9
+exponent(4, -2) → 0.0625
+exponent(2, -5) → 0.03125</code></pre>
+
+<h4>Edge Cases</h4>
+<ul>
+  <li>Any base raised to the power of <code>0</code> returns <code>1</code>.</li>
+  <li>A negative exponent returns the reciprocal (e.g. <code>base<sup>-exp</sup> = 1 / base<sup>exp</sup></code>).</li>
+</ul>

@@ -1,2 +1,32 @@
-<p>Write a recursive function that adds together every number in an array.</p>
-<p>For example, <code>sum([1, 2, 3, 4, 5, 6])</code> should return <code>21</code>.</p>
+<p>Given an array of integers, return the sum of all elements in the array.</p>
+
+<h4>Function Signature</h4>
+<pre><code>sum(array)</code></pre>
+
+<h4>Parameters</h4>
+<ul>
+  <li><code>array</code> — an array of integers. May contain positive, negative, or zero values.</li>
+</ul>
+
+<h4>Output</h4>
+<p>Return a number representing the sum of all integers in the array.</p>
+
+<h4>Constraints</h4>
+<ul>
+  <li>The function must use recursion.</li>
+  <li>The function should accept exactly one argument.</li>
+  <li>The input array must not be mutated.</li>
+</ul>
+
+<h4>Examples</h4>
+<pre><code>sum([1, 2, 3, 4, 5, 6]) → 21
+sum([-1, -2, -3])        → -6
+sum([1, -2, 3, -4])      → -2
+sum([])                  → 0
+sum([4])                 → 4</code></pre>
+
+<h4>Edge Cases</h4>
+<ul>
+  <li>An empty array should return <code>0</code>.</li>
+  <li>An array with a single element should return that element.</li>
+</ul>

@@ -1,2 +1,27 @@
-<p>Write a recursive function that adds all positive integers below the given number.</p>
-<p>For example, <code>sumBelow(10)</code> should return <code>45</code>, and <code>sumBelow(7)</code> should return <code>21</code>.</p>
+<p>Given an integer <code>n</code>, return the sum of all integers between zero and <code>n</code>, exclusive of <code>n</code> itself. For negative values of <code>n</code>, sum the negative integers between <code>n</code> and zero.</p>
+
+<h4>Function Signature</h4>
+<pre><code>sumBelow(n)</code></pre>
+
+<h4>Parameters</h4>
+<ul>
+  <li><code>n</code> — an integer, which may be positive, negative, or zero.</li>
+</ul>
+
+<h4>Output</h4>
+<p>Return a number representing the sum of all integers between zero and <code>n</code> (not including <code>n</code>).</p>
+
+<h4>Constraints</h4>
+<ul>
+  <li>The function must use recursion.</li>
+  <li>The function should accept exactly one argument.</li>
+</ul>
+
+<h4>Examples</h4>
+<pre><code>sumBelow(0)   → 0
+sumBelow(1)   → 0
+sumBelow(2)   → 1
+sumBelow(7)   → 21    (1 + 2 + 3 + 4 + 5 + 6)
+sumBelow(10)  → 45
+sumBelow(-1)  → 0
+sumBelow(-6)  → -15   (-1 + -2 + -3 + -4 + -5)</code></pre>
