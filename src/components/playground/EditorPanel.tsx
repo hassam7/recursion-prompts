@@ -1,10 +1,20 @@
+import type { Problem } from '../../playground/problemService';
 import styles from './EditorPanel.module.css';
 
 const GITHUB_REPO_URL = 'https://github.com/hassam7/recursion-prompts';
 const GITHUB_DEFAULT_BRANCH = 'master';
 
-export function EditorPanel({ problem, descriptionHtml, code, onCodeChange, onReset, onRunShortcut }) {
-  const partTag = problem?.num <= 36 ? 'Part 1' : 'Part 2';
+interface EditorPanelProps {
+  problem: Problem | null;
+  descriptionHtml: string;
+  code: string;
+  onCodeChange: (code: string) => void;
+  onReset: () => void;
+  onRunShortcut: () => void;
+}
+
+export function EditorPanel({ problem, descriptionHtml, code, onCodeChange, onReset, onRunShortcut }: EditorPanelProps) {
+  const partTag = problem && problem.num <= 36 ? 'Part 1' : 'Part 2';
   const editUrl = problem
     ? `${GITHUB_REPO_URL}/tree/${GITHUB_DEFAULT_BRANCH}/problems/${problem.dir}`
     : GITHUB_REPO_URL;

@@ -8,7 +8,10 @@ export const AnalyticsEvent = Object.freeze({
   TESTS_TIMED_OUT: 'tests_timed_out',
 });
 
-export function track(name, params = {}) {
+type AnalyticsEventName = typeof AnalyticsEvent[keyof typeof AnalyticsEvent];
+type AnalyticsParams = Record<string, string | number | boolean | null | undefined>;
+
+export function track(name: AnalyticsEventName, params: AnalyticsParams = {}) {
   if (typeof window === 'undefined') {
     return;
   }
@@ -19,6 +22,7 @@ export function track(name, params = {}) {
 
   if (
     typeof window.posthog !== 'undefined' &&
+    !Array.isArray(window.posthog) &&
     typeof window.posthog.capture === 'function'
   ) {
     window.posthog.capture(name, params);

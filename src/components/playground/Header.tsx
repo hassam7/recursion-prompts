@@ -1,6 +1,20 @@
+import type { Problem } from '../../playground/problemService';
 import styles from './Header.module.css';
 
-export function Header({ currentProblem, totalProblems, isRunning, hasPrevious, hasNext, onPrevious, onNext, onRun, onMenuToggle, menuOpen }) {
+interface HeaderProps {
+  currentProblem: Problem | null;
+  totalProblems: number;
+  isRunning: boolean;
+  hasPrevious: boolean;
+  hasNext: boolean;
+  menuOpen: boolean;
+  onPrevious: () => void;
+  onNext: () => void;
+  onRun: () => void;
+  onMenuToggle: () => void;
+}
+
+export function Header({ currentProblem, totalProblems, isRunning, hasPrevious, hasNext, onPrevious, onNext, onRun, onMenuToggle, menuOpen }: HeaderProps) {
   return (
     <header className={styles.header}>
       <button

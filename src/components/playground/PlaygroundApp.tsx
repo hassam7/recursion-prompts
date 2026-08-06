@@ -1,16 +1,22 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { AnalyticsEvent, track } from '../../playground/analytics.js';
-import { loadManifest, loadMochaCss, loadProblemDescription, loadProblemSpec, loadProblemStub, prefetchTestLibraries } from '../../playground/problemService.js';
-import { runTestsInFrame } from '../../playground/testRunner.js';
-import { Header } from './Header.jsx';
-import { Sidebar } from './Sidebar.jsx';
-import { EditorPanel } from './EditorPanel.jsx';
-import { ResultsPanel } from './ResultsPanel.jsx';
+import { AnalyticsEvent, track } from '../../playground/analytics';
+import { loadManifest, loadMochaCss, loadProblemDescription, loadProblemSpec, loadProblemStub, prefetchTestLibraries } from '../../playground/problemService';
+import type { LibraryCache, Problem } from '../../playground/problemService';
+import { runTestsInFrame } from '../../playground/testRunner';
+import type { TestRunResult } from '../../playground/testRunner';
+import { Header } from './Header';
+import { Sidebar } from './Sidebar';
+import { EditorPanel } from './EditorPanel';
+import { ResultsPanel } from './ResultsPanel';
 import styles from './PlaygroundApp.module.css';
 
-function getProblemFromURL(problemCount) {
+interface OpenProblemOptions {
+  pushHistory?: boolean;
+}
+
+function getProblemFromURL(problemCount: number) {
   const params = new URLSearchParams(window.location.search);
-  const problemNumber = parseInt(params.get('problem'), 10);
+  const problemNumber = parseInt(params.get('problem') || '', 10);
   if (!problemNumber || problemNumber < 1 || problemNumber > problemCount) {
     return 1;
   }
@@ -18,7 +24,7 @@ function getProblemFromURL(problemCount) {
   return problemNumber;
 }
 
-function problemParams(problem) {
+function problemParams(problem: Problem) {
   return {
     problem_num: problem.num,
     problem_slug: problem.slug,
@@ -26,26 +32,30 @@ function problemParams(problem) {
   };
 }
 
+function getErrorMessage(error: unknown) {
+  return error instanceof Error ? error.message : String(error);
+}
+
 export default function PlaygroundApp() {
-  const testFrameRef = useRef(null);
-  const [manifest, setManifest] = useState([]);
+  const testFrameRef = useRef<HTMLIFrameElement | null>(null);
+  const [manifest, setManifest] = useState<Problem[]>([]);
   const [currentProblemNumber, setCurrentProblemNumber] = useState(1);
-  const [stubCache, setStubCache] = useState({});
-  const [descriptionCache, setDescriptionCache] = useState({});
-  const [userCode, setUserCode] = useState({});
+  const [stubCache, setStubCache] = useState<Record<number, string>>({});
+  const [descriptionCache, setDescriptionCache] = useState<Record<number, string>>({});
+  const [userCode, setUserCode] = useState<Record<number, string>>({});
   const [codeDraft, setCodeDraft] = useState('');
-  const [libCache, setLibCache] = useState(null);
-  const [resultCache, setResultCache] = useState({});
+  const [libCache, setLibCache] = useState<LibraryCache | null>(null);
+  const [resultCache, setResultCache] = useState<Record<number, TestRunResult>>({});
   const [searchFilter, setSearchFilter] = useState('');
   const [searchTracked, setSearchTracked] = useState(false);
   const [isRunning, setIsRunning] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState('');
-  const [timedOutProblem, setTimedOutProblem] = useState(null);
+  const [timedOutProblem, setTimedOutProblem] = useState<number | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
 
   const currentIndex = manifest.findIndex((problem) => problem.num === currentProblemNumber);
-  const currentProblem = currentIndex >= 0 ? manifest[currentIndex] : null;
+  const currentProblem = currentIndex >= 0 ? manifest[currentIndex] || null : null;
   const hasPrevious = currentIndex > 0;
   const hasNext = currentIndex >= 0 && currentIndex < manifest.length - 1;
 
@@ -56,7 +66,7 @@ export default function PlaygroundApp() {
     return new Map(manifest.map((problem) => [problem.num, problem]));
   }, [manifest]);
 
-  async function openProblem(problemNumber, options = {}) {
+  async function openProblem(problemNumber: number, options: OpenProblemOptions = {}) {
     if (isRunning) {
       return;
     }
@@ -91,6 +101,20 @@ export default function PlaygroundApp() {
     track(AnalyticsEvent.PROBLEM_OPENED, problemParams(problem));
   }
 
+  function handlePrevious() {
+    const previousProblem = manifest[currentIndex - 1];
+    if (hasPrevious && previousProblem) {
+      openProblem(previousProblem.num, { pushHistory: true });
+    }
+  }
+
+  function handleNext() {
+    const nextProblem = manifest[currentIndex + 1];
+    if (hasNext && nextProblem) {
+      openProblem(nextProblem.num, { pushHistory: true });
+    }
+  }
+
   useEffect(() => {
     let ignore = false;
 
@@ -107,6 +131,10 @@ export default function PlaygroundApp() {
 
         const startProblemNumber = getProblemFromURL(loadedManifest.length);
         const startProblem = loadedManifest.find((problem) => problem.num === startProblemNumber) || loadedManifest[0];
+        if (!startProblem) {
+          throw new Error('No problems found.');
+        }
+
         const [startStub, startDescription] = await Promise.all([
           loadProblemStub(startProblem),
           loadProblemDescription(startProblem),
@@ -126,7 +154,7 @@ export default function PlaygroundApp() {
         window.history.replaceState({ problem: startProblem.num }, '', `?problem=${startProblem.num}`);
         track(AnalyticsEvent.PROBLEM_OPENED, problemParams(startProblem));
       } catch (error) {
-        setLoadError(error.message);
+        setLoadError(getErrorMessage(error));
         setIsLoading(false);
         console.error(error);
       }
@@ -140,8 +168,9 @@ export default function PlaygroundApp() {
   }, []);
 
   useEffect(() => {
-    function handlePopState(event) {
-      const problemNumber = event.state?.problem || getProblemFromURL(manifest.length);
+    function handlePopState(event: PopStateEvent) {
+      const state = event.state as { problem?: number } | null;
+      const problemNumber = state?.problem || getProblemFromURL(manifest.length);
       openProblem(problemNumber, { pushHistory: false });
     }
 
@@ -149,7 +178,7 @@ export default function PlaygroundApp() {
     return () => window.removeEventListener('popstate', handlePopState);
   }, [manifest, problemByNumber, stubCache, descriptionCache, userCode, isRunning]);
 
-  function handleCodeChange(nextCode) {
+  function handleCodeChange(nextCode: string) {
     if (!currentProblem) {
       return;
     }
@@ -173,7 +202,7 @@ export default function PlaygroundApp() {
     track(AnalyticsEvent.RESET_CLICKED, problemParams(currentProblem));
   }
 
-  function handleSearch(nextFilter) {
+  function handleSearch(nextFilter: string) {
     setSearchFilter(nextFilter);
     if (!searchTracked && nextFilter.trim().length > 0) {
       setSearchTracked(true);
@@ -219,11 +248,11 @@ export default function PlaygroundApp() {
         });
       }
     } catch (error) {
-      if (error.message === 'Test run timed out.') {
+      if (getErrorMessage(error) === 'Test run timed out.') {
         setTimedOutProblem(currentProblem.num);
         track(AnalyticsEvent.TESTS_TIMED_OUT, problemParams(currentProblem));
       } else {
-        window.alert(`Could not run tests: ${error.message}`);
+        window.alert(`Could not run tests: ${getErrorMessage(error)}`);
       }
     } finally {
       setIsRunning(false);
@@ -248,8 +277,8 @@ export default function PlaygroundApp() {
         hasNext={hasNext}
         menuOpen={menuOpen}
         onMenuToggle={() => setMenuOpen((open) => !open)}
-        onPrevious={() => hasPrevious && openProblem(manifest[currentIndex - 1].num, { pushHistory: true })}
-        onNext={() => hasNext && openProblem(manifest[currentIndex + 1].num, { pushHistory: true })}
+        onPrevious={handlePrevious}
+        onNext={handleNext}
         onRun={handleRunTests}
       />
 
