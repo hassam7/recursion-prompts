@@ -1,6 +1,19 @@
+import type { Problem } from '../../playground/problemService';
+import type { TestRunResult } from '../../playground/testRunner';
 import styles from './Sidebar.module.css';
 
-export function Sidebar({ manifest, currentProblemNumber, resultCache, filter, isOpen, onFilterChange, onSelect, onClose }) {
+interface SidebarProps {
+  manifest: Problem[];
+  currentProblemNumber: number;
+  resultCache: Record<number, TestRunResult>;
+  filter: string;
+  isOpen: boolean;
+  onFilterChange: (filter: string) => void;
+  onSelect: (problemNumber: number) => void;
+  onClose: () => void;
+}
+
+export function Sidebar({ manifest, currentProblemNumber, resultCache, filter, isOpen, onFilterChange, onSelect, onClose }: SidebarProps) {
   const lowerFilter = filter.toLowerCase();
   const filteredProblems = manifest.filter((problem) => {
     const label = `${problem.num}. ${problem.title}`;

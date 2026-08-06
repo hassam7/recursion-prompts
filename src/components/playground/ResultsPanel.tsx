@@ -1,13 +1,19 @@
+import type { TestRunResult } from '../../playground/testRunner';
 import styles from './ResultsPanel.module.css';
 
-function stripTopDescribe(fullTitle) {
+function stripTopDescribe(fullTitle: string) {
   return fullTitle.replace(/^\d+\.\s*\S.*?\s/, '').trim() || fullTitle;
 }
 
-export function ResultsPanel({ result, isTimeout }) {
+interface ResultsPanelProps {
+  result?: TestRunResult;
+  isTimeout: boolean;
+}
+
+export function ResultsPanel({ result, isTimeout }: ResultsPanelProps) {
   const stats = result?.stats;
   const total = stats ? stats.passes + stats.failures : 0;
-  const progress = total ? `${(stats.passes / total) * 100}%` : '0%';
+  const progress = stats && total ? `${(stats.passes / total) * 100}%` : '0%';
 
   return (
     <aside className={styles.resultsPanel}>
@@ -34,8 +40,8 @@ export function ResultsPanel({ result, isTimeout }) {
 
         {!isTimeout && result && (
           <>
-            <div className={`${styles.summaryBox} ${stats.failures === 0 ? styles.allPass : styles.hasFail}`}>
-              {stats.failures === 0 ? `All ${total} tests passing!` : `${stats.passes} / ${total} tests passing`}
+            <div className={`${styles.summaryBox} ${result.stats.failures === 0 ? styles.allPass : styles.hasFail}`}>
+              {result.stats.failures === 0 ? `All ${total} tests passing!` : `${result.stats.passes} / ${total} tests passing`}
             </div>
 
             {result.passes.map((test, index) => (
