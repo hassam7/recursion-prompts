@@ -50,7 +50,7 @@ const structuredData = {
       <article class="problem-article">
         <div class="eyebrow">Problem {problem.num}</div>
         <h1>{problem.title} Recursion Challenge</h1>
-        <div class="problem-description" set:html={descriptionHtml} />
+        <div class="problem-description custom-scrollbar" set:html={descriptionHtml} />
 
         <div class="action-row">
           <a class="button-link" href={`/playground/?problem=${problem.num}`}>Open in interactive editor</a>

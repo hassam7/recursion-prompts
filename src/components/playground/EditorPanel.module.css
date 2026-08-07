@@ -35,6 +35,7 @@
 }
 
 .problemStatement {
+  composes: custom-scrollbar from global;
   max-height: 240px;
   overflow: auto;
   margin: 16px 18px 18px;

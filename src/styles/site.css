@@ -16,6 +16,31 @@
   box-sizing: border-box;
 }
 
+.custom-scrollbar {
+  scrollbar-color: rgba(45, 212, 191, 0.45) rgba(255, 255, 255, 0.04);
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 999px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  border: 2px solid var(--surface, var(--site-code-bg));
+  border-radius: 999px;
+  background: rgba(45, 212, 191, 0.45);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(45, 212, 191, 0.7);
+}
+
 html {
   background: var(--site-bg);
   color: var(--site-text);
