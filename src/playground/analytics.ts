@@ -20,11 +20,7 @@ export function track(name: AnalyticsEventName, params: AnalyticsParams = {}) {
     window.gtag('event', name, params);
   }
 
-  if (
-    typeof window.posthog !== 'undefined' &&
-    !Array.isArray(window.posthog) &&
-    typeof window.posthog.capture === 'function'
-  ) {
+  if (typeof window.posthog?.capture === 'function') {
     window.posthog.capture(name, params);
   }
 }
