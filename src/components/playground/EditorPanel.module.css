@@ -131,6 +131,26 @@
   tab-size: 2;
 }
 
+.specViewer {
+  composes: custom-scrollbar from global;
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  margin: 0;
+  padding: 18px;
+  background: #111827;
+  color: #e5e7eb;
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 13.5px;
+  line-height: 1.62;
+  tab-size: 2;
+}
+
+.activeToggle {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
 @media (max-width: 720px) {
   .editorToolbar {
     align-items: flex-start;

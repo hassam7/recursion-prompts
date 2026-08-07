@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { AnalyticsEvent, track } from '../../playground/analytics';
-import { loadManifest, loadProblemDescription, loadProblemStub } from '../../playground/problemService';
+import { loadManifest, loadProblemDescription, loadProblemSpec, loadProblemStub } from '../../playground/problemService';
 import type { Problem } from '../../playground/problemService';
 import { getProblemFromURL, pushProblemToHistory, replaceProblemInHistory } from './useProblemRouting';
 
@@ -32,6 +32,7 @@ export function useProblemSession({ isNavigationLocked, onProblemOpened }: UsePr
   const [currentProblemNumber, setCurrentProblemNumber] = useState(1);
   const [stubCache, setStubCache] = useState<Record<number, string>>({});
   const [descriptionCache, setDescriptionCache] = useState<Record<number, string>>({});
+  const [specCache, setSpecCache] = useState<Record<number, string>>({});
   const [userCode, setUserCode] = useState<Record<number, string>>({});
   const [codeDraft, setCodeDraft] = useState('');
   const [isLoading, setIsLoading] = useState(true);
@@ -59,9 +60,10 @@ export function useProblemSession({ isNavigationLocked, onProblemOpened }: UsePr
     const openRequestId = latestOpenRequestId.current + 1;
     latestOpenRequestId.current = openRequestId;
 
-    const [nextStub, nextDescription] = await Promise.all([
+    const [nextStub, nextDescription, nextSpec] = await Promise.all([
       stubCache[problemNumber] || loadProblemStub(problem),
       descriptionCache[problemNumber] || loadProblemDescription(problem),
+      specCache[problemNumber] || loadProblemSpec(problem),
     ]);
 
     if (latestOpenRequestId.current !== openRequestId) {
@@ -73,6 +75,9 @@ export function useProblemSession({ isNavigationLocked, onProblemOpened }: UsePr
     }
     if (!descriptionCache[problemNumber]) {
       setDescriptionCache((previous) => ({ ...previous, [problemNumber]: nextDescription }));
+    }
+    if (!specCache[problemNumber]) {
+      setSpecCache((previous) => ({ ...previous, [problemNumber]: nextSpec }));
     }
 
     const savedCode = userCode[problemNumber];
@@ -150,9 +155,10 @@ export function useProblemSession({ isNavigationLocked, onProblemOpened }: UsePr
           throw new Error('No problems found.');
         }
 
-        const [startStub, startDescription] = await Promise.all([
+        const [startStub, startDescription, startSpec] = await Promise.all([
           loadProblemStub(startProblem),
           loadProblemDescription(startProblem),
+          loadProblemSpec(startProblem),
         ]);
 
         if (ignore) {
@@ -163,6 +169,7 @@ export function useProblemSession({ isNavigationLocked, onProblemOpened }: UsePr
         setCurrentProblemNumber(startProblem.num);
         setStubCache({ [startProblem.num]: startStub });
         setDescriptionCache({ [startProblem.num]: startDescription });
+        setSpecCache({ [startProblem.num]: startSpec });
         setCodeDraft(startStub);
         setIsLoading(false);
         replaceProblemInHistory(startProblem.num);
@@ -188,6 +195,7 @@ export function useProblemSession({ isNavigationLocked, onProblemOpened }: UsePr
     hasPrevious,
     hasNext,
     descriptionHtml: descriptionCache[currentProblemNumber] || '',
+    specText: specCache[currentProblemNumber] || '',
     codeDraft,
     isLoading,
     loadError,

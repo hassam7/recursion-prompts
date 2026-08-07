@@ -85,6 +85,7 @@ export default function PlaygroundApp() {
       <EditorPanel
         problem={problemSession.currentProblem}
         descriptionHtml={problemSession.descriptionHtml}
+        specText={problemSession.specText}
         code={problemSession.codeDraft}
         onCodeChange={problemSession.handleCodeChange}
         onReset={problemSession.handleReset}
