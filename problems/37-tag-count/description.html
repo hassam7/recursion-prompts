@@ -1,5 +1,13 @@
 <p>Given an HTML tag name, return the number of times that tag appears in the DOM. The function should traverse the DOM tree starting from <code>document.body</code> if no starting node is provided.</p>
 
+<h4>Node Structure</h4>
+<p>Each DOM node has the following properties useful for this problem:</p>
+<ul>
+  <li><code>node.nodeName</code> — the tag name in uppercase (e.g. <code>"DIV"</code>, <code>"P"</code>, <code>"SPAN"</code>).</li>
+  <li><code>node.childNodes</code> — a list of the node's direct children (elements, text nodes, etc.).</li>
+</ul>
+<p>Compare <code>node.nodeName</code> against <code>tag.toUpperCase()</code> to check for a match, then recurse into each child via <code>node.childNodes</code>.</p>
+
 <h4>Function Signature</h4>
 <pre><code>tagCount(tag, node)</code></pre>
 
@@ -20,6 +28,15 @@
 </ul>
 
 <h4>Examples</h4>
-<pre><code>// Given a page with 3 &lt;p&gt; elements and 2 &lt;div&gt; elements:
-tagCount('p')   → 3
-tagCount('div') → 2</code></pre>
+<pre><code>// Given this DOM tree:
+// &lt;div&gt;
+//   &lt;p&gt;beep&lt;/p&gt;
+//   &lt;div&gt;
+//     &lt;p&gt;&lt;span&gt;blip&lt;/span&gt;&lt;/p&gt;
+//   &lt;/div&gt;
+//   &lt;p&gt;blorp&lt;/p&gt;
+// &lt;/div&gt;
+
+tagCount('p')    → 3
+tagCount('div')  → 2
+tagCount('span') → 1</code></pre>
