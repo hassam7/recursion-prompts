@@ -1,0 +1,70 @@
+---
+const posthogProjectKey = 'phc_A9ytvBBnKPb6Dwnss7xNpgq7LQENpWJctH9GTvkjbi2W';
+---
+
+<script is:inline define:vars={{ posthogProjectKey }}>
+  !function(documentRef, posthogRef) {
+    var methodIndex;
+    var scriptElement;
+    var firstScript;
+    if (!posthogRef.__SV) {
+      window.posthog = posthogRef;
+      posthogRef._i = [];
+      posthogRef.init = function(projectKey, config, name) {
+        function stubMethod(target, key) {
+          var keyParts = key.split('.');
+          if (keyParts.length === 2) {
+            target = target[keyParts[0]];
+            key = keyParts[1];
+          }
+          target[key] = function() {
+            target.push([key].concat(Array.prototype.slice.call(arguments, 0)));
+          };
+        }
+
+        scriptElement = documentRef.createElement('script');
+        scriptElement.type = 'text/javascript';
+        scriptElement.crossOrigin = 'anonymous';
+        scriptElement.async = true;
+        scriptElement.src = config.api_host.replace('.i.posthog.com', '-assets.i.posthog.com') + '/static/array.js';
+        firstScript = documentRef.getElementsByTagName('script')[0];
+        firstScript.parentNode.insertBefore(scriptElement, firstScript);
+
+        var target = posthogRef;
+        if (name !== undefined) {
+          target = posthogRef[name] = [];
+        } else {
+          name = 'posthog';
+        }
+
+        target.people = target.people || [];
+        target.toString = function(stubPeople) {
+          var label = 'posthog';
+          if (name !== 'posthog') {
+            label += '.' + name;
+          }
+          if (!stubPeople) {
+            label += ' (stub)';
+          }
+          return label;
+        };
+        target.people.toString = function() {
+          return target.toString(1) + '.people (stub)';
+        };
+
+        var methods = 'init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagResult isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey getNextSurveyStep identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing debug'.split(' ');
+        for (methodIndex = 0; methodIndex < methods.length; methodIndex += 1) {
+          stubMethod(target, methods[methodIndex]);
+        }
+        posthogRef._i.push([projectKey, config, name]);
+      };
+      posthogRef.__SV = 1;
+    }
+  }(document, window.posthog || []);
+
+  window.posthog.init(posthogProjectKey, {
+    api_host: 'https://us.i.posthog.com',
+    defaults: '2026-05-30',
+    person_profiles: 'always',
+  });
+</script>
