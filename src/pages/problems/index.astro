@@ -1,0 +1,45 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getProblems, siteUrl } from '../../lib/problem-content.js';
+
+const problems = await getProblems();
+const title = 'All Recursion Challenges - Recursion Prompts';
+const description = `Browse all ${problems.length} recursion challenges. Pick a problem, read the prompt, and solve it with JavaScript.`;
+const canonicalPath = '/problems/';
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'All Recursion Challenges',
+  description,
+  url: siteUrl(canonicalPath),
+  isPartOf: {
+    '@type': 'WebSite',
+    name: 'Recursion Prompts',
+    url: siteUrl('/'),
+  },
+};
+---
+
+<BaseLayout title={title} description={description} canonicalPath={canonicalPath} structuredData={structuredData}>
+  <main class="site-shell">
+    <header class="site-header">
+      <a class="site-brand" href="/">Recursion Prompts</a>
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="/playground/">Practice</a>
+        <a href="/">Home</a>
+      </nav>
+    </header>
+
+    <section id="challenges" aria-labelledby="challenges-title">
+      <h2 id="challenges-title">All recursion challenges</h2>
+      <div class="problem-grid">
+        {problems.map((problem) => (
+          <a class="problem-link" href={`/problems/${problem.slug}/`}>
+            <span>Problem {problem.num}</span>
+            {problem.title}
+          </a>
+        ))}
+      </div>
+    </section>
+  </main>
+</BaseLayout>
